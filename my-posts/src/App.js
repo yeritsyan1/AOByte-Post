@@ -12,6 +12,7 @@ import {
   SIGNUP,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
+import NewsFeed from "./components/NewsFeed";
 
 const App = () => {
   return (
@@ -34,15 +35,7 @@ const App = () => {
               </ProtectLogin>
             }
           ></Route>
-          <Route
-            path="/"
-            element={
-              <h1> / Route - Posts List </h1>
-              /* <ProtectRoute>
-                <List />
-              </ProtectRoute> */
-            }
-          ></Route>
+          <Route path="/" element={<NewsFeed />}></Route>
           {/* <Route
             path={`/${CREATEPOST}`}
             element={
