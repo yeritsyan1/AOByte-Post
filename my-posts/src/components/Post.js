@@ -4,7 +4,6 @@ import { v4 as uuid } from "uuid";
 import Comments from "./Comments";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -14,18 +13,18 @@ import { USER } from "../constants/constants";
 import { useSelector } from "react-redux";
 
 const Post = (props) => {
+  const { setOpen, item } = props;
   const [comment, setComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const commentList = useSelector(function (state) {
     return state.comments;
   });
-
-  const [comments, setComments] = useState(
-    commentList.filter((comment) => comment.postId === props.item.postId)
+  const comments = commentList.filter(
+    (comment) => comment.postId === item.postId
   );
 
   /*  const rateComment = async (elem) => {
-  props.item.comments.map((item) => {
+  item.comments.map((item) => {
         if (item.id === elem.id) {
           return {
             ...elem,
@@ -50,21 +49,24 @@ const Post = (props) => {
           backgroundColor: "wheat",
         }}
       >
-        <CardHeader avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>} />
-        <CardMedia component="img" maxheight="194" alt="" />
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <CardHeader
+            avatar={
+              <Avatar sx={{ bgcolor: red[500] }}> {item.author[0]} </Avatar>
+            }
+          />
+          <CardContent> {item.author} </CardContent>
+        </Box>
         <CardContent sx={{ textAlign: "center", padding: 0 }}>
-          <a href={props.item.url}>
-            <h2 style={{ margin: 0 }}> {props.item.title} </h2>
+          <a href={item.url}>
+            <h2 style={{ margin: 0 }}> {item.title} </h2>
           </a>
         </CardContent>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {props.item.body.length > 200 ? (
+            {item.body.length > 200 ? (
               <>
-                {props.item.body.slice(
-                  0,
-                  showAll ? props.item.body.length : 200
-                )}
+                {item.body.slice(0, showAll ? item.body.length : 200)}
                 <Button
                   onClick={() => {
                     setShowAll(!showAll);
@@ -74,17 +76,19 @@ const Post = (props) => {
                 </Button>
               </>
             ) : (
-              props.item.body
+              item.body
             )}
           </Typography>
         </CardContent>
         <CardActions>
           <Button
             variant="outlined"
-            // disabled={props.item?.liked.includes(
+            // disabled={item?.liked.includes(
             //   JSON.parse(localStorage.getItem(USER)).providerData[0].email
             // )}
-            onClick={async () => {}}
+            onClick={async () => {
+              localStorage.getItem(USER) || setOpen(true);
+            }}
           >
             Like
           </Button>
@@ -104,6 +108,7 @@ const Post = (props) => {
             disabled={comment.length < 1}
             onClick={async () => {
               await setComment("");
+              localStorage.getItem(USER) || setOpen(true);
             }}
           >
             Send
@@ -120,7 +125,7 @@ const Post = (props) => {
             {comments.map((comment) => {
               return (
                 <React.Fragment key={uuid()}>
-                  <Comments comment={comment} />
+                  <Comments comment={comment} setOpen={setOpen} />
                 </React.Fragment>
               );
             })}

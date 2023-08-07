@@ -9,6 +9,7 @@ export const store = createStore(
     posts: [
       {
         authorId: "ds0iHW9qQIZwUglr5TU3EfvvKEu2",
+        author: "User3@gmail.com",
         url: "/post1",
         postId: 1,
         category: "General",
@@ -18,6 +19,7 @@ export const store = createStore(
       },
       {
         authorId: "zQPmcYzVecdlDRTzUyoochMcs3S2",
+        author: "User5@gmail.com",
         url: "/post2",
         postId: 2,
         category: "Country",
@@ -60,5 +62,6 @@ export const store = createStore(
         rated: [],
       },
     ],
+    myPosts: [],
   }
 );

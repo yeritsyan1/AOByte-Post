@@ -3,8 +3,10 @@ import { Button, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
+import { USER } from "../constants/constants";
 
 const Comments = (props) => {
+  const { setOpen } = props;
   const [rateValue, setRateValue] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -18,8 +20,12 @@ const Comments = (props) => {
         padding: "0 15px",
       }}
     >
-      <span> {props.comment.commentAuthor} </span>
-      <p> {props.comment.body} </p>
+      <div style={{ display: "flex", gap: 10 }}>
+        <p style={{ borderBottom: "1px black dotted" }}>
+          {props.comment.commentAuthor}:
+        </p>
+        <p> {props.comment.body} </p>
+      </div>
       <div>
         <Box
           sx={{
@@ -50,6 +56,7 @@ const Comments = (props) => {
         disabled={comment.length < 1}
         onClick={async () => {
           await setComment("");
+          localStorage.getItem(USER) || setOpen(true);
         }}
       >
         Send

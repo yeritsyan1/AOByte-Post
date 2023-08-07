@@ -1,18 +1,20 @@
 import React from "react";
-//import List from "./components/List";
 import SignUp from "./components/registration/SignUp";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./components/registration/SignIn";
-//import CreatePost from "./components/CreatePost";
+import CreatePost from "./components/CreatePost";
 //import Profile from "./components/Profile";
-//import ProtectRoute from "./components/ProtectRoute";
+import ProtectRoute from "./components/ProtectRoute";
 import ProtectLogin from "./components/registration/ProtectLogin";
 import {
-  /* CREATEPOST, PROFILE, */ SIGNIN,
+  CREATEPOST,
+  MYPOSTS,
+  /* PROFILE, */ SIGNIN,
   SIGNUP,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
 import NewsFeed from "./components/NewsFeed";
+import MyPosts from "./components/MyPosts";
 
 const App = () => {
   return (
@@ -31,19 +33,32 @@ const App = () => {
             path={`/${SIGNIN}`}
             element={
               <ProtectLogin>
-                <SignIn />
+                <SignIn
+                  open={true}
+                  setOpen={(e) => {
+                    return;
+                  }}
+                />
               </ProtectLogin>
             }
           ></Route>
           <Route path="/" element={<NewsFeed />}></Route>
-          {/* <Route
+          <Route
             path={`/${CREATEPOST}`}
             element={
               <ProtectRoute>
                 <CreatePost />
               </ProtectRoute>
             }
-          ></Route> */}
+          ></Route>
+          <Route
+            path={MYPOSTS}
+            element={
+              <ProtectRoute>
+                <MyPosts />
+              </ProtectRoute>
+            }
+          ></Route>
           {/*  <Route
             path={`/${PROFILE}`}
             element={
