@@ -61,7 +61,35 @@ const SignUp = () => {
             password.length < 6 ||
             password !== confirmPassword
           }
-          //onClick={async () => {}}
+          onClick={async (e) => {
+            e.preventDefault();
+            await fetch("/signup", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email,
+                password,
+              }),
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  setEmail("");
+                  setPassword("");
+                  setConfirmPassword("");
+                  setError("");
+                  navigate(`/${SIGNIN}`);
+                }
+                return res.json();
+              })
+              .then((res) => {
+                setError(res.message);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
         >
           Sign Up
         </Button>
