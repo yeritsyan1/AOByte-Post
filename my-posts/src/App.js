@@ -9,12 +9,14 @@ import ProtectLogin from "./components/registration/ProtectLogin";
 import {
   CREATEPOST,
   MYPOSTS,
+  POST,
   /* PROFILE, */ SIGNIN,
   SIGNUP,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
 import NewsFeed from "./components/NewsFeed";
 import MyPosts from "./components/MyPosts";
+import PostPage from "./components/PostPage";
 
 const App = () => {
   return (
@@ -42,7 +44,10 @@ const App = () => {
               </ProtectLogin>
             }
           ></Route>
-          <Route path="/" element={<NewsFeed />}></Route>
+          <Route path="/" element={<NewsFeed />}>
+          </Route>
+          <Route path={`/${POST}/*`} element={<PostPage />}>
+          </Route>
           <Route
             path={`/${CREATEPOST}`}
             element={

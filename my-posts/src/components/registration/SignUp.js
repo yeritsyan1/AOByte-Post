@@ -71,6 +71,7 @@ const SignUp = () => {
               body: JSON.stringify({
                 email,
                 password,
+                isEmailVerify: false,
               }),
             })
               .then((res) => {

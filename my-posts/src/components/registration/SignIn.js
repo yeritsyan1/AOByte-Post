@@ -73,6 +73,7 @@ const SignIn = (props) => {
                   return res.json();
                 })
                 .then((res) => {
+                  localStorage.setItem("token", JSON.stringify(res.token));
                   setError(res.message);
                 })
                 .catch((err) => console.log(err, "Try again"));

@@ -9,11 +9,15 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import CardActions from "@mui/material/CardActions";
-import { USER } from "../constants/constants";
+import { POST, USER } from "../constants/constants";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Post = (props) => {
   const { setOpen, item } = props;
+  const day = new Date().getDate(item.date);
+  const month = new Date().getMonth(item.date) + 1
+  const year = new Date().getUTCFullYear(item.date)
   const [comment, setComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const commentList = useSelector(function (state) {
@@ -49,6 +53,7 @@ const Post = (props) => {
           backgroundColor: "wheat",
         }}
       >
+        <CardContent> {day}.{month}.{year} </CardContent>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <CardHeader
             avatar={
@@ -58,9 +63,9 @@ const Post = (props) => {
           <CardContent> {item.author} </CardContent>
         </Box>
         <CardContent sx={{ textAlign: "center", padding: 0 }}>
-          <a href={item.url}>
-            <h2 style={{ margin: 0 }}> {item.title} </h2>
-          </a>
+          <h2 style={{ margin: 0 }}>
+            <Link to={`/${POST}/${item._id}`}> {item.title} </Link>
+          </h2>
         </CardContent>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
