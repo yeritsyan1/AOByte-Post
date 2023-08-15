@@ -8,6 +8,7 @@ const postSchema = new mongoose.Schema({
   category: { type: String },
   date: { type: Number },
   rate: { type: Number },
+  likedUser: { type: Array },
 });
 
 const Post = mongoose.model("post", postSchema);

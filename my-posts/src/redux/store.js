@@ -9,16 +9,18 @@ import {
   commentsReducer,
   initialCommentsReducer,
 } from "./slices/commentsReducer";
+import { initialMyPostsReducer, myPostReducer } from "./slices/myPostReducer";
 
 export const store = createStore(
   combineReducers({
     posts: postReducer,
     comments: commentsReducer,
+    myPosts: myPostReducer,
   }),
   {
     posts: initialPostreducer,
     comments: initialCommentsReducer,
-    // myPosts: [],
+    myPosts: initialMyPostsReducer,
   },
   applyMiddleware(thunk)
 );

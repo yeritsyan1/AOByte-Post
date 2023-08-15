@@ -1,4 +1,4 @@
-const actionPost = "latest-post";
+export const actionPost = "latest-post";
 export const initialPostreducer = [];
 
 export function postReducer(state = [], action) {
@@ -9,7 +9,9 @@ export function postReducer(state = [], action) {
 }
 
 export function selectPost(state) {
-  return state.posts;
+  return state.posts.sort((a, b) => {
+    return b.rate - a.rate;
+  });
 }
 
 export const updatePosts = (newPost) => {
@@ -31,7 +33,7 @@ export const latestPost = () => {
         return dispatch(updatePosts(res));
       })
       .catch(() => {
-        return console.log("error");
+        return;
       });
   };
 };
