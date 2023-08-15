@@ -5,6 +5,8 @@ import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import User from "./backend/models/User.js";
 import Post from "./backend/models/Post.js";
+import Comment from "./backend/models/Comments.js";
+import Reply from "./backend/models/Reply.js";
 
 const app = express();
 app.use(express.static("./my-posts/build"));
@@ -54,7 +56,7 @@ app.post("/signin", async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ message: `${email} not found.`, statusCode: 400 });
+        .json({ message: `'${email}' not found.`, statusCode: 400 });
     }
 
     const validPassword = bcryptjs.compareSync(password, user.password);
@@ -95,6 +97,95 @@ app.get("/posts", (req, res) => {
   Post.find()
     .then((allPosts) => res.json(allPosts))
     .catch(() => res.status(400).json({ message: "Something went wrong." }));
+});
+
+// get my posts
+app.get("/myPost", async (req, res) => {
+  const receivedToken = await req.headers.authorization.split(" ")[1];
+
+  try {
+    Post.find({ author: { $regex: req.headers.author } }).then((posts) => {
+      return res.json(posts);
+    });
+  } catch (err) {
+    res.json({ message: "err", err });
+  }
+});
+
+// get comments
+app.get("/comment", (req, res) => {
+  try {
+    Comment.find().then((comments) => res.json(comments));
+  } catch (err) {
+    res.status(400).json({ message: "Failed to load." });
+  }
+});
+
+// send new comment
+app.post("/comment", async (req, res) => {
+  const { author, body, date, rate, postId } = req.body;
+
+  try {
+    const comment = new Comment({
+      author,
+      body,
+      date,
+      rate,
+      postId,
+    });
+    const saveComment = await comment.save();
+    res.json({ message: "Send" });
+  } catch (err) {
+    res.status(400).json({ message: "Something went wrong." });
+  }
+});
+
+// get reply
+app.get("/reply", (req, res) => {
+  try {
+    Reply.find().then((reply) => res.json(reply));
+  } catch (err) {
+    res.status(400).json({ message: "Failed to load." });
+  }
+});
+
+// send reply
+app.post("/reply", async (req, res) => {
+  const { author, body, date, rate, replies, parentId } = req.body;
+
+  try {
+    const reply = new Reply({
+      author,
+      body,
+      date,
+      rate,
+      replies,
+      parentId,
+    });
+    const saveReply = await reply.save();
+    res.json({ message: "Send reply" });
+  } catch (err) {
+    res.status(400).json({ message: "Something went wrong." });
+  }
+});
+
+// update like
+app.put("/like", async (req, res) => {
+  const { rate, _id, likedUser } = req.body;
+
+  try {
+    const updateResult = await Post.updateOne(
+      { _id: _id },
+      { $addToSet: { likedUser }, $set: { rate } }
+    ).exec();
+    if (updateResult.nModified === 1) {
+      res.status(200).json({ message: "Post updated successfully" });
+    } else {
+      res.status(404).json({ message: "Post not found or no changes made" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Error updating post" });
+  }
 });
 
 app.listen(process.env.PORT || 3001);

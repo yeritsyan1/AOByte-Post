@@ -14,9 +14,13 @@ import {
   SIGNUP,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
-import NewsFeed from "./components/NewsFeed";
-import MyPosts from "./components/MyPosts";
+import { NewsFeedWithPostHOC } from "./components/NewsFeed";
+import { MyPostWithPostHOC } from "./components/MyPosts";
 import PostPage from "./components/PostPage";
+import { selectMyPosts, latestMyPost } from "./redux/slices/myPostReducer";
+import { selectPost, latestPost } from "./redux/slices/postReducer";
+import DeleteButton from "./hoc/props/DeleteButton";
+import EmptyComponent from "./hoc/props/EmptyComponent";
 
 const App = () => {
   return (
@@ -44,10 +48,17 @@ const App = () => {
               </ProtectLogin>
             }
           ></Route>
-          <Route path="/" element={<NewsFeed />}>
-          </Route>
-          <Route path={`/${POST}/*`} element={<PostPage />}>
-          </Route>
+          <Route
+            path="/"
+            element={
+              <NewsFeedWithPostHOC
+                selectPost={selectPost}
+                latestPost={latestPost}
+                DeleteButton={EmptyComponent}
+              />
+            }
+          ></Route>
+          <Route path={`/${POST}/*`} element={<PostPage />}></Route>
           <Route
             path={`/${CREATEPOST}`}
             element={
@@ -60,7 +71,11 @@ const App = () => {
             path={MYPOSTS}
             element={
               <ProtectRoute>
-                <MyPosts />
+                <MyPostWithPostHOC
+                  selectPost={selectMyPosts}
+                  latestPost={latestMyPost}
+                  DeleteButton={DeleteButton}
+                />
               </ProtectRoute>
             }
           ></Route>

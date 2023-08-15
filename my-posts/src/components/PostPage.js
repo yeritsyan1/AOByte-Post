@@ -8,6 +8,7 @@ import SignIn from "./registration/SignIn";
 import PageNotFound from "./PageNotFound";
 import { Link } from "react-router-dom";
 import { CREATEPOST } from "../constants/constants";
+import EmptyComponent from "../hoc/props/EmptyComponent";
 
 export default function PostPage() {
   const [open, setOpen] = useState(false);
@@ -32,10 +33,15 @@ export default function PostPage() {
             <React.Fragment key={uuid}>
               <Route
                 path={`/${item._id}/`}
-                element={<Post item={item} setOpen={setOpen} />}
+                element={
+                  <Post
+                    item={item}
+                    setOpen={setOpen}
+                    DeleteButton={EmptyComponent}
+                  />
+                }
               ></Route>
-              <Route path="*" element={<PageNotFound />}>
-              </Route>
+              <Route path="*" element={<PageNotFound />}></Route>
             </React.Fragment>
           );
         })}

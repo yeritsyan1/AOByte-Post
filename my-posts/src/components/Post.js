@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Divider, TextField } from "@mui/material";
-import { v4 as uuid } from "uuid";
-import Comments from "./Comments";
+import Comments from "./comments/Comments";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -10,21 +9,20 @@ import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import CardActions from "@mui/material/CardActions";
 import { POST, USER } from "../constants/constants";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { actionPost, selectPost } from "../redux/slices/postReducer";
 
 const Post = (props) => {
-  const { setOpen, item } = props;
+  const { setOpen, item, DeleteButton } = props;
   const day = new Date().getDate(item.date);
-  const month = new Date().getMonth(item.date) + 1
-  const year = new Date().getUTCFullYear(item.date)
+  const month = new Date().getMonth(item.date) + 1;
+  const year = new Date().getUTCFullYear(item.date);
   const [comment, setComment] = useState("");
   const [showAll, setShowAll] = useState(false);
-  const commentList = useSelector(function (state) {
-    return state.comments;
-  });
-  const comments = commentList.filter(
-    (comment) => comment.postId === item.postId
+  const posts = useSelector(selectPost);
+  const checkLiked = item.likedUser.find(
+    (item) => item === "64d7d54c30c47cdaca4e91a9"
   );
 
   /*  const rateComment = async (elem) => {
@@ -44,6 +42,56 @@ const Post = (props) => {
       })
   }; */
 
+  const dispatch = useDispatch();
+  const onLike = async () => {
+    await dispatch({
+      type: actionPost,
+      payload: {
+        posts: posts.map((currentPost) => {
+          if (item._id === currentPost._id) {
+            return {
+              ...item,
+              rate: ++item.rate,
+              likedUser: ["64d7d54c30c47cdaca4e91a9"],
+            };
+          } else {
+            return currentPost;
+          }
+        }),
+      },
+    });
+
+    await fetch("/like", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id: item._id,
+        rate: item.rate,
+        likedUser: "64d7d54c30c47cdaca4e91a9",
+      }),
+    });
+  };
+
+  const sendComment = async () => {
+    await setComment("");
+    localStorage.getItem(USER) || setOpen(true);
+    fetch("/comment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        author: { email: "Tigran" },
+        body: comment,
+        date: Date.now(),
+        rate: 0,
+        postId: item._id,
+      }),
+    });
+  };
+
   return (
     <>
       <Card
@@ -53,7 +101,9 @@ const Post = (props) => {
           backgroundColor: "wheat",
         }}
       >
-        <CardContent> {day}.{month}.{year} </CardContent>
+        <CardContent>
+          {day}.{month}.{year}
+        </CardContent>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <CardHeader
             avatar={
@@ -62,6 +112,7 @@ const Post = (props) => {
           />
           <CardContent> {item.author} </CardContent>
         </Box>
+        <DeleteButton />
         <CardContent sx={{ textAlign: "center", padding: 0 }}>
           <h2 style={{ margin: 0 }}>
             <Link to={`/${POST}/${item._id}`}> {item.title} </Link>
@@ -88,15 +139,15 @@ const Post = (props) => {
         <CardActions>
           <Button
             variant="outlined"
-            // disabled={item?.liked.includes(
-            //   JSON.parse(localStorage.getItem(USER)).providerData[0].email
-            // )}
+            disabled={!!checkLiked}
             onClick={async () => {
-              localStorage.getItem(USER) || setOpen(true);
+              (await localStorage.getItem(USER)) || setOpen(true);
+              await onLike();
             }}
           >
             Like
           </Button>
+          {!!item.rate && <CardContent> {item.rate} </CardContent>}
         </CardActions>
         <CardContent sx={{ textAlign: "center" }}>
           <TextField
@@ -111,10 +162,7 @@ const Post = (props) => {
           <Button
             variant="contained"
             disabled={comment.length < 1}
-            onClick={async () => {
-              await setComment("");
-              localStorage.getItem(USER) || setOpen(true);
-            }}
+            onClick={sendComment}
           >
             Send
           </Button>
@@ -127,13 +175,7 @@ const Post = (props) => {
             >
               Comments:
             </h3>
-            {comments.map((comment) => {
-              return (
-                <React.Fragment key={uuid()}>
-                  <Comments comment={comment} setOpen={setOpen} />
-                </React.Fragment>
-              );
-            })}
+            <Comments post={item} />
           </Box>
         </CardContent>
       </Card>
