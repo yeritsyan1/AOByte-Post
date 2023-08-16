@@ -10,7 +10,7 @@ export function postReducer(state = [], action) {
 
 export function selectPost(state) {
   return state.posts.sort((a, b) => {
-    return b.rate - a.rate;
+    return b.date - a.date;
   });
 }
 
@@ -25,7 +25,13 @@ export const updatePosts = (newPost) => {
 
 export const latestPost = () => {
   return (dispatch) => {
-    fetch("/posts")
+    fetch("/posts", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        isActive: true
+      }
+    })
       .then((res) => {
         return res.json();
       })

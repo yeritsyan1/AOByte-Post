@@ -19,8 +19,9 @@ import { MyPostWithPostHOC } from "./components/MyPosts";
 import PostPage from "./components/PostPage";
 import { selectMyPosts, latestMyPost } from "./redux/slices/myPostReducer";
 import { selectPost, latestPost } from "./redux/slices/postReducer";
-import DeleteButton from "./hoc/props/DeleteButton";
+import AdditionalActions from "./hoc/props/AdditionalActions";
 import EmptyComponent from "./hoc/props/EmptyComponent";
+import FilteredPage from "./components/FilteredPage";
 
 const App = () => {
   return (
@@ -54,7 +55,7 @@ const App = () => {
               <NewsFeedWithPostHOC
                 selectPost={selectPost}
                 latestPost={latestPost}
-                DeleteButton={EmptyComponent}
+                AdditionalActions={EmptyComponent}
               />
             }
           ></Route>
@@ -74,11 +75,12 @@ const App = () => {
                 <MyPostWithPostHOC
                   selectPost={selectMyPosts}
                   latestPost={latestMyPost}
-                  DeleteButton={DeleteButton}
+                  AdditionalActions={AdditionalActions}
                 />
               </ProtectRoute>
             }
           ></Route>
+          <Route path="/search" element={<FilteredPage />}></Route>
           {/*  <Route
             path={`/${PROFILE}`}
             element={
