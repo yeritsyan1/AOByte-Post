@@ -7,7 +7,7 @@ import NavTabs from "../components/navigation/HeaderNavigation";
 
 function withPost(Component) {
   return function (props) {
-    const { selectPost, latestPost, test, DeleteButton } = props;
+    const { selectPost, latestPost, AdditionalActions } = props;
     const [open, setOpen] = useState(false);
 
     const posts = useSelector(selectPost);
@@ -27,7 +27,7 @@ function withPost(Component) {
               key={uuid()}
               item={item}
               setOpen={setOpen}
-              DeleteButton={DeleteButton}
+              AdditionalActions={AdditionalActions}
             />
           );
         })}

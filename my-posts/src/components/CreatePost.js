@@ -34,6 +34,7 @@ const CreatePost = () => {
         category: category,
         rate: 0,
         date: Date.now(),
+        isActive: true,
       }),
     })
       .then((res) => {

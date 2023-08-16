@@ -73,7 +73,8 @@ app.post("/signin", async (req, res) => {
 // create new post
 app.post("/post", async (req, res) => {
   try {
-    const { author, title, body, comments, category, rate, date } = req.body;
+    const { author, title, body, comments, category, rate, date, isActive } =
+      req.body;
 
     const newPost = new Post({
       author,
@@ -83,6 +84,7 @@ app.post("/post", async (req, res) => {
       category,
       date,
       rate,
+      isActive,
     });
     const post = await newPost.save();
     return res.status(200).json({ message: "Success" });
@@ -94,7 +96,8 @@ app.post("/post", async (req, res) => {
 
 // get posts list
 app.get("/posts", (req, res) => {
-  Post.find()
+  const { isactive } = req.headers;
+  Post.find({ isActive: isactive })
     .then((allPosts) => res.json(allPosts))
     .catch(() => res.status(400).json({ message: "Something went wrong." }));
 });
@@ -186,6 +189,45 @@ app.put("/like", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error updating post" });
   }
+});
+
+// update post isAcitve
+app.put("/isActive", async (req, res) => {
+  const { isActive, _id } = req.body;
+  try {
+    const updateResult = await Post.updateOne(
+      { _id: _id },
+      { $set: { isActive: isActive } }
+    ).exec();
+    if (updateResult.nModified === 1) {
+      res.status(200).json({ message: "Post updated successfully " });
+    } else {
+      res.status(404).json({ message: "Post not found or no changes made" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+// filter posts
+app.get("/filterposts", async (req, res) => {
+  const { isactive, title, category, starttime, endtime } = req.headers;
+
+  const pipe = [
+    {
+      $match: {
+        isActive: true,
+        category: category,
+        date: { $gte: Number(starttime), $lte: Number(endtime) },
+      },
+    },
+  ];
+  if (title !== "undefined") {
+    pipe[0].$match["title"] = new RegExp(title, "i");
+  }
+  const filter = await Post.aggregate(pipe)
+    .then((posts) => res.status(200).json(posts))
+    .catch(() => res.status(400).json({ message: "Failed to load" }));
 });
 
 app.listen(process.env.PORT || 3001);

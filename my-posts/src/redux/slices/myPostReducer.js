@@ -4,7 +4,7 @@ export const initialMyPostsReducer = [];
 export const myPostReducer = (state = [], action) => {
   if (action.type === actionMyPosts) {
     return action.payload.myPosts.sort((a, b) => {
-      return b.rate - a.rate;
+      return b.date - a.date;
     });
   }
   return state;

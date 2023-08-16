@@ -6,9 +6,8 @@ import Post from "./Post";
 import { v4 as uuid } from "uuid";
 import SignIn from "./registration/SignIn";
 import PageNotFound from "./PageNotFound";
-import { Link } from "react-router-dom";
-import { CREATEPOST } from "../constants/constants";
 import EmptyComponent from "../hoc/props/EmptyComponent";
+import NavTabs from "./navigation/HeaderNavigation";
 
 export default function PostPage() {
   const [open, setOpen] = useState(false);
@@ -26,7 +25,7 @@ export default function PostPage() {
 
   return (
     <>
-      <Link to={`/${CREATEPOST}`}> Create Post </Link>
+      <NavTabs />
       <Routes>
         {posts.map((item) => {
           return (
@@ -37,7 +36,7 @@ export default function PostPage() {
                   <Post
                     item={item}
                     setOpen={setOpen}
-                    DeleteButton={EmptyComponent}
+                    AdditionalActions={EmptyComponent}
                   />
                 }
               ></Route>

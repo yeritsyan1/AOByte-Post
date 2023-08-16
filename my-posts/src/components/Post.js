@@ -14,10 +14,7 @@ import { Link } from "react-router-dom";
 import { actionPost, selectPost } from "../redux/slices/postReducer";
 
 const Post = (props) => {
-  const { setOpen, item, DeleteButton } = props;
-  const day = new Date().getDate(item.date);
-  const month = new Date().getMonth(item.date) + 1;
-  const year = new Date().getUTCFullYear(item.date);
+  const { setOpen, item, AdditionalActions } = props;
   const [comment, setComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const posts = useSelector(selectPost);
@@ -102,8 +99,9 @@ const Post = (props) => {
         }}
       >
         <CardContent>
-          {day}.{month}.{year}
+          <AdditionalActions item={item} />
         </CardContent>
+        <CardContent>{new Date(item.date).toLocaleDateString()}</CardContent>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <CardHeader
             avatar={
@@ -112,7 +110,6 @@ const Post = (props) => {
           />
           <CardContent> {item.author} </CardContent>
         </Box>
-        <DeleteButton />
         <CardContent sx={{ textAlign: "center", padding: 0 }}>
           <h2 style={{ margin: 0 }}>
             <Link to={`/${POST}/${item._id}`}> {item.title} </Link>
