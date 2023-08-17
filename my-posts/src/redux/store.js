@@ -11,6 +11,7 @@ import {
 } from "./slices/commentsReducer";
 import { initialMyPostsReducer, myPostReducer } from "./slices/myPostReducer";
 import { filterReducer, initialFilterReducer } from "./slices/searchReducer";
+import { initialReply, initialReplyReducer } from "./slices/replyReducer";
 
 export const store = createStore(
   combineReducers({
@@ -18,12 +19,14 @@ export const store = createStore(
     comments: commentsReducer,
     myPosts: myPostReducer,
     filteredPosts: filterReducer,
+    reply: initialReplyReducer,
   }),
   {
     posts: initialPostreducer,
     comments: initialCommentsReducer,
     myPosts: initialMyPostsReducer,
     filteredPosts: initialFilterReducer,
+    reply: initialReply,
   },
   applyMiddleware(thunk)
 );

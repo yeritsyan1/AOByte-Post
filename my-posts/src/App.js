@@ -62,7 +62,7 @@ const App = () => {
             }
           ></Route>
           <Route path={`/${POST}/*`} element={<PostPage />}></Route>
-          {/* <Route
+          <Route
             path={`/${CREATEPOST}`}
             element={
               <ProtectRoute>
@@ -81,7 +81,7 @@ const App = () => {
                 />
               </ProtectRoute>
             }
-          ></Route> */}
+          ></Route>
           <Route
             path={MYPOSTS}
             element={

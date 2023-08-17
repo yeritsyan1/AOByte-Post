@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Comment from "./Comment";
 import { v4 as uuid } from "uuid";
+import { useSelector } from "react-redux";
+import { selectComments } from "../../redux/slices/commentsReducer";
 
 export default function Comments(props) {
   const { post } = props;
-  const [comments, setComments] = useState([]);
-  useEffect(() => {
-    fetch("/comment")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => setComments(res))
-      .catch(() => {
-        return;
-      });
-  }, []);
+  const comments = useSelector(selectComments);
 
   return (
     <div>

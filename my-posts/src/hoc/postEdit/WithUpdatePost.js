@@ -41,6 +41,7 @@ export default function withUpdatePost(Component) {
           </DialogContent>
           <DialogContent>
             <TextField
+              fullWidth
               style={{ overflow: "scroll" }}
               placeholder="Type something..."
               multiline
