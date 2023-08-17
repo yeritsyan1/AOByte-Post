@@ -1,22 +1,15 @@
 import { Button, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Replies from "./Replies";
 import Reply from "./Reply";
 import { v4 as uuid } from "uuid";
+import { useSelector } from "react-redux";
+import { selectReply } from "../../redux/slices/replyReducer";
 
 export default function Comment(props) {
   const { comment } = props;
   const [message, setMessage] = useState("");
-  const [reply, setReply] = useState([]);
-
-  useEffect(() => {
-    fetch("/reply")
-      .then((res) => res.json())
-      .then((res) => setReply(res))
-      .catch(() => {
-        return;
-      });
-  }, []);
+  const reply = useSelector(selectReply);
 
   const sendReply = () => {
     setMessage("");

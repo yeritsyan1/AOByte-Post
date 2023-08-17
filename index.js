@@ -13,11 +13,14 @@ app.use(express.static("./my-posts/build"));
 app.use(express.json());
 app.use(cors());
 
-const url = process.env.MONGO_DB_URL;
-mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+//const url = process.env.MONGO_DB_URL;
+mongoose.connect(
+  "mongodb+srv://tyeritsyan1:kaxZGzlq8k7M3um6@userpost.8oagrcs.mongodb.net/?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const generateAccessToken = (id) => {
   const payload = { id };

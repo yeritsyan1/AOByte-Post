@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Post from "../components/Post";
 import { v4 as uuid } from "uuid";
 import NavTabs from "../components/navigation/HeaderNavigation";
+import { latestComments } from "../redux/slices/commentsReducer";
+import { latestReply } from "../redux/slices/replyReducer";
 
 function withPost(Component) {
   return function (props) {
@@ -15,12 +17,14 @@ function withPost(Component) {
 
     useEffect(() => {
       dispatch(latestPost());
+      dispatch(latestComments());
+      dispatch(latestReply());
     }, []);
 
     return (
       <>
         <NavTabs />
-        <Component />
+        <Component posts={posts} />
         {posts.map((item) => {
           return (
             <Post
