@@ -230,4 +230,39 @@ app.get("/filterposts", async (req, res) => {
     .catch(() => res.status(400).json({ message: "Failed to load" }));
 });
 
+// edit post
+app.put("/editPost", (req, res) => {
+  const { _id, title, body, category } = req.headers;
+  try {
+    const updateResult = Post.updateOne(
+      { _id },
+      {
+        $set: {
+          title,
+          body,
+          category,
+        },
+      }
+    ).exec();
+    if (updateResult.nModified === 1) {
+      res.status(200).json({ message: "Post not found or no changes made" });
+    } else {
+      res.status(400).json({ message: "Post updated successfull" });
+    }
+  } catch {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+// delete post
+app.delete("/delete", async (req, res) => {
+  const { _id } = req.headers;
+  try {
+    await Post.deleteOne({ _id });
+    res.status(200).json({ message: "Post deleted" });
+  } catch {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
 app.listen(process.env.PORT || 3001);

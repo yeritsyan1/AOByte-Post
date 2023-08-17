@@ -33,7 +33,9 @@ export const latestPost = () => {
       }
     })
       .then((res) => {
-        return res.json();
+        if(res.status === 200) {
+          return res.json();
+        }
       })
       .then((res) => {
         return dispatch(updatePosts(res));

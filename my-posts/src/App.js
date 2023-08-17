@@ -2,7 +2,7 @@ import React from "react";
 import SignUp from "./components/registration/SignUp";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./components/registration/SignIn";
-import CreatePost from "./components/CreatePost";
+import { CreatePostWithHOC } from "./hoc/props/EmptyComponent";
 //import Profile from "./components/Profile";
 import ProtectRoute from "./components/ProtectRoute";
 import ProtectLogin from "./components/registration/ProtectLogin";
@@ -12,6 +12,7 @@ import {
   POST,
   /* PROFILE, */ SIGNIN,
   SIGNUP,
+  USER,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
 import { NewsFeedWithPostHOC } from "./components/NewsFeed";
@@ -22,6 +23,7 @@ import { selectPost, latestPost } from "./redux/slices/postReducer";
 import AdditionalActions from "./hoc/props/AdditionalActions";
 import EmptyComponent from "./hoc/props/EmptyComponent";
 import FilteredPage from "./components/FilteredPage";
+import { createPost } from "./hoc/postEdit/actions/createPost";
 
 const App = () => {
   return (
@@ -60,14 +62,26 @@ const App = () => {
             }
           ></Route>
           <Route path={`/${POST}/*`} element={<PostPage />}></Route>
-          <Route
+          {/* <Route
             path={`/${CREATEPOST}`}
             element={
               <ProtectRoute>
-                <CreatePost />
+                <CreatePostWithHOC
+                  _id=""
+                  item={{
+                    user: USER,
+                    title: "",
+                    body: "",
+                    category: "General",
+                    comments: [],
+                  }}
+                  name="Create Post"
+                  buttonName="Create"
+                  createOrUpdate={createPost}
+                />
               </ProtectRoute>
             }
-          ></Route>
+          ></Route> */}
           <Route
             path={MYPOSTS}
             element={
