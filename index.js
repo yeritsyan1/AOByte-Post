@@ -154,7 +154,8 @@ app.get("/reply", (req, res) => {
 
 // send reply
 app.post("/reply", async (req, res) => {
-  const { author, body, date, rate, replies, parentId } = req.body;
+  const { author, body, date, rate, replies, parentId, idReplyParent } =
+    req.body;
 
   try {
     const reply = new Reply({
@@ -164,6 +165,7 @@ app.post("/reply", async (req, res) => {
       rate,
       replies,
       parentId,
+      idReplyParent,
     });
     const saveReply = await reply.save();
     res.json({ message: "Send reply" });

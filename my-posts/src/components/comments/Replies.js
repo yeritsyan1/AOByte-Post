@@ -3,18 +3,27 @@ import Reply from "./Reply";
 import { v4 as uuid } from "uuid";
 
 export default function Replies(props) {
-  const { rep } = props;
+  const { rep, replies } = props;
 
   return (
     <div style={{ paddingLeft: "15px" }}>
-      {rep.replies.map((rep) => {
-        return (
-          <div key={uuid}>
-            <Reply rep={rep} />
-            <Replies rep={rep} />
-          </div>
-        );
-      })}
+      {replies
+        .filter((reReply) => reReply.idReplyParent === rep._id)
+        .map((rep) => {
+          return (
+            <div
+              key={uuid()}
+              style={{
+                paddingLeft: "15px",
+                margin: "2px",
+                border: "1px black solid",
+              }}
+            >
+              <Reply rep={rep} />
+              <Replies rep={rep} replies={replies} />
+            </div>
+          );
+        })}
     </div>
   );
 }
