@@ -6,7 +6,8 @@ const replySchema = mongoose.Schema({
   date: { type: Number },
   rate: { type: Number },
   replies: { type: Array },
-  parentId: { type: String },
+  parentId: { type: String || null },
+  idReplyParent: { type: String || null },
 });
 
 const Reply = mongoose.model("reply", replySchema);

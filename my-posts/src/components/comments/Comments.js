@@ -24,10 +24,7 @@ export default function Comments(props) {
         })
         .map((comment) => {
           return (
-            <div
-              key={uuid()}
-              style={{ paddingLeft: "15px", borderLeft: "1px black solid" }}
-            >
+            <div key={uuid()} style={{ padding: "1px", paddingLeft: "15px" }}>
               <Comment comment={comment} post={post} />
             </div>
           );
