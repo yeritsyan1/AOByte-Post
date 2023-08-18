@@ -7,6 +7,7 @@ import User from "./backend/models/User.js";
 import Post from "./backend/models/Post.js";
 import Comment from "./backend/models/Comments.js";
 import Reply from "./backend/models/Reply.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.static("./my-posts/build"));
@@ -267,6 +268,17 @@ app.delete("/delete", async (req, res) => {
     res.status(200).json({ message: "Post deleted" });
   } catch {
     res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+// onePost
+app.post("/postPage", async (req, res) => {
+  try {
+    await Post.find({ _id: req.body.id }).then((post) => {
+      return res.status(200).json(post);
+    });
+  } catch {
+    return;
   }
 });
 

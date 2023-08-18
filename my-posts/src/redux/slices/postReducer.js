@@ -14,34 +14,34 @@ export function selectPost(state) {
   });
 }
 
-export const updatePosts = (newPost) => {
-  return {
-    type: actionPost,
-    payload: {
-      posts: newPost,
-    },
-  };
-};
+// export const updatePosts = (newPost) => {
+//   return {
+//     type: actionPost,
+//     payload: {
+//       posts: newPost,
+//     },
+//   };
+// };
 
-export const latestPost = () => {
-  return (dispatch) => {
-    fetch("/posts", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        isActive: true
-      }
-    })
-      .then((res) => {
-        if(res.status === 200) {
-          return res.json();
-        }
-      })
-      .then((res) => {
-        return dispatch(updatePosts(res));
-      })
-      .catch(() => {
-        return;
-      });
-  };
-};
+//export const latestPost = () => {
+// return (dispatch) => {
+//   fetch("/posts", {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       isActive: true
+//     }
+//   })
+//     .then((res) => {
+//       if(res.status === 200) {
+//         return res.json();
+//       }
+//     })
+//     .then((res) => {
+//       return dispatch(updatePosts(res));
+//     })
+//     .catch(() => {
+//       return;
+//     });
+// };
+//};

@@ -18,12 +18,20 @@ import PageNotFound from "./components/PageNotFound";
 import { NewsFeedWithPostHOC } from "./components/NewsFeed";
 import { MyPostWithPostHOC } from "./components/MyPosts";
 import PostPage from "./components/PostPage";
-import { selectMyPosts, latestMyPost } from "./redux/slices/myPostReducer";
-import { selectPost, latestPost } from "./redux/slices/postReducer";
+import {
+  selectMyPosts,
+  /* latestMyPost, */ actionMyPosts,
+} from "./redux/slices/myPostReducer";
+import {
+  selectPost,
+  latestPost,
+  updatePosts,
+} from "./redux/slices/postReducer";
 import AdditionalActions from "./hoc/props/AdditionalActions";
 import EmptyComponent from "./hoc/props/EmptyComponent";
 import FilteredPage from "./components/FilteredPage";
 import { createPost } from "./hoc/postEdit/actions/createPost";
+import { actionPost } from "./redux/slices/postReducer";
 
 const App = () => {
   return (
@@ -56,8 +64,12 @@ const App = () => {
             element={
               <NewsFeedWithPostHOC
                 selectPost={selectPost}
-                latestPost={latestPost}
+                //latestPost={latestPost}
                 AdditionalActions={EmptyComponent}
+                path="/posts"
+                action={actionPost}
+                headers={{ "Content-Type": "application/json", isActive: true }}
+                stateName="posts"
               />
             }
           ></Route>
@@ -88,8 +100,19 @@ const App = () => {
               <ProtectRoute>
                 <MyPostWithPostHOC
                   selectPost={selectMyPosts}
-                  latestPost={latestMyPost}
+                  //latestPost={latestMyPost}
                   AdditionalActions={AdditionalActions}
+                  path="/myPost"
+                  action={actionMyPosts}
+                  headers={{
+                    Authorization: `Bearer ${localStorage
+                      .getItem("token")
+                      .substring(1, localStorage.getItem("token").length - 1)}`,
+                    author: localStorage
+                      .getItem("user")
+                      .substring(1, localStorage.getItem("user").length - 1),
+                  }}
+                  stateName="myPosts"
                 />
               </ProtectRoute>
             }
