@@ -112,7 +112,9 @@ const Post = (props) => {
         </Box>
         <CardContent sx={{ textAlign: "center", padding: 0 }}>
           <h2 style={{ margin: 0 }}>
-            <Link to={`/${POST}/${item._id}`}> {item.title} </Link>
+            <Link to={`/${POST}/${item._id}`} state={{ item }}>
+              {item.title}
+            </Link>
           </h2>
         </CardContent>
         <CardContent>
