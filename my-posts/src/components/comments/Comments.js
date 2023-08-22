@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { selectComments } from "../../redux/slices/commentsReducer";
 
 export default function Comments(props) {
-  const { post } = props;
+  const { post, setOpen } = props;
   const comments = useSelector(selectComments);
 
   return (
@@ -17,7 +17,7 @@ export default function Comments(props) {
         .map((comment) => {
           return (
             <div key={uuid()} style={{ padding: "1px", paddingLeft: "15px" }}>
-              <Comment comment={comment} post={post} />
+              <Comment comment={comment} post={post} setOpen={setOpen} />
             </div>
           );
         })}

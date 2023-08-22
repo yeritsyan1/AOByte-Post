@@ -13,6 +13,17 @@ const app = express();
 app.use(express.static("./my-posts/build"));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+
+app.use("/post", validationToken);
+app.use("/myPost", validationToken);
+app.use("/sendComment", validationToken);
+app.use("/sendReply", validationToken);
+app.use("/sendReReply", validationToken);
+app.use("/like", validationToken);
+app.use("/isActive", validationToken);
+app.use("/editPost", validationToken);
+app.use("/deletePost", validationToken);
 
 //const url = process.env.MONGO_DB_URL;
 mongoose.connect(
@@ -27,6 +38,17 @@ const generateAccessToken = (id) => {
   const payload = { id };
   return jsonwebtoken.sign(payload, "secret", { expiresIn: "24h" });
 };
+
+// check auth
+async function validationToken(req, res, next) {
+  const token = req.headers.token;
+  try {
+    await jsonwebtoken.verify(token.substring(1, token.length - 1), "secret");
+    next();
+  } catch {
+    return null;
+  }
+}
 
 app.post("/signup", async (req, res) => {
   try {
@@ -68,7 +90,7 @@ app.post("/signin", async (req, res) => {
       return res.status(400).json({ message: "Password is incorrect" });
     }
     const token = generateAccessToken(user._id);
-    return res.status(200).json({ message: "", token });
+    return res.status(200).json({ message: "", user, token });
   } catch (err) {
     res.status(400).json({ message: "Login error" });
   }
@@ -129,7 +151,7 @@ app.get("/comment", (req, res) => {
 });
 
 // send new comment
-app.post("/comment", async (req, res) => {
+app.post("/sendComment", async (req, res) => {
   const { author, body, date, rate, postId } = req.body;
 
   try {
@@ -157,7 +179,29 @@ app.get("/reply", (req, res) => {
 });
 
 // send reply
-app.post("/reply", async (req, res) => {
+app.post("/sendReply", async (req, res) => {
+  const { author, body, date, rate, replies, parentId, idReplyParent } =
+    req.body;
+
+  try {
+    const reply = new Reply({
+      author,
+      body,
+      date,
+      rate,
+      replies,
+      parentId,
+      idReplyParent,
+    });
+    await reply.save();
+    res.json({ message: "Send reply" });
+  } catch (err) {
+    res.status(400).json({ message: "Something went wrong." });
+  }
+});
+
+// send reply
+app.post("/sendReReply", async (req, res) => {
   const { author, body, date, rate, replies, parentId, idReplyParent } =
     req.body;
 
@@ -261,7 +305,7 @@ app.put("/editPost", (req, res) => {
 });
 
 // delete post
-app.delete("/delete", async (req, res) => {
+app.delete("/deletePost", async (req, res) => {
   const { _id } = req.headers;
   try {
     await Post.deleteOne({ _id });

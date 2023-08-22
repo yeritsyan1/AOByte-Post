@@ -59,8 +59,8 @@ export default function withUpdatePost(Component) {
             <Button onClick={() => navigate(-1)}>Cancel</Button>
             <Button
               variant="contained"
-              onClick={() => {
-                createOrUpdate(
+              onClick={async () => {
+                await createOrUpdate(
                   _id,
                   user,
                   title,
@@ -72,6 +72,9 @@ export default function withUpdatePost(Component) {
                   setCategory,
                   setMessage
                 );
+                await setTitle("");
+                await setBody("");
+                await setCategory("General");
               }}
               disabled={title.length < 2 || body.length < 10 || disabledButton}
             >

@@ -16,6 +16,7 @@ export default function AdditionalActions(props) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
         _id: item._id,
@@ -31,10 +32,11 @@ export default function AdditionalActions(props) {
   };
 
   const onDelete = async () => {
-    await fetch("/delete", {
+    await fetch("/deletePost", {
       method: "DELETE",
       headers: {
         _id: item._id,
+        token: localStorage.getItem("token"),
       },
     })
       .then((res) => {

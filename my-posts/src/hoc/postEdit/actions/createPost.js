@@ -14,6 +14,7 @@ export async function createPost(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      token: localStorage.getItem("token"),
     },
     body: JSON.stringify({
       author: user,

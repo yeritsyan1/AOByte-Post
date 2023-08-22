@@ -7,16 +7,18 @@ import { useSelector } from "react-redux";
 import { selectReply } from "../../redux/slices/replyReducer";
 
 export default function Comment(props) {
-  const { comment } = props;
+  const { comment, setOpen } = props;
   const [message, setMessage] = useState("");
   const reply = useSelector(selectReply);
 
-  const sendReply = () => {
-    setMessage("");
-    fetch("/reply", {
+  const sendReply = async () => {
+    await setMessage("");
+    localStorage.getItem("token") || setOpen(true);
+    await fetch("/sendReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
         author: { email: "Tigran" },
@@ -67,8 +69,8 @@ export default function Comment(props) {
                         border: "1px black solid",
                       }}
                     >
-                      <Reply rep={rep} />
-                      <Replies rep={rep} replies={reply} />
+                      <Reply rep={rep} setOpen={setOpen} />
+                      <Replies rep={rep} replies={reply} setOpen={setOpen} />
                     </div>
                   );
                 })}

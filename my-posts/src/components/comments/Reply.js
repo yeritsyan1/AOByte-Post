@@ -2,14 +2,16 @@ import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
 
 export default function Reply(props) {
-  const { rep } = props;
+  const { rep, setOpen } = props;
   const [reReply, setReReply] = useState("");
 
-  const sendReReply = () => {
-    fetch("/reply", {
+  const sendReReply = async () => {
+    localStorage.getItem("token") || setOpen(true);
+    await fetch("/sendReReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
         author: { email: "Tigran" },

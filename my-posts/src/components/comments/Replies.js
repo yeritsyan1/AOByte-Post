@@ -3,7 +3,7 @@ import Reply from "./Reply";
 import { v4 as uuid } from "uuid";
 
 export default function Replies(props) {
-  const { rep, replies } = props;
+  const { rep, replies, setOpen } = props;
 
   return (
     <div style={{ paddingLeft: "15px" }}>
@@ -20,7 +20,7 @@ export default function Replies(props) {
               }}
             >
               <Reply rep={rep} />
-              <Replies rep={rep} replies={replies} />
+              <Replies rep={rep} replies={replies} setOpen={setOpen} />
             </div>
           );
         })}

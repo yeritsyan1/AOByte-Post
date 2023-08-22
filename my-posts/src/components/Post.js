@@ -62,6 +62,7 @@ const Post = (props) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
         _id: item._id,
@@ -74,10 +75,11 @@ const Post = (props) => {
   const sendComment = async () => {
     await setComment("");
     localStorage.getItem(USER) || setOpen(true);
-    fetch("/comment", {
+    fetch("/sendComment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
         author: { email: "Tigran" },
@@ -174,7 +176,7 @@ const Post = (props) => {
             >
               Comments:
             </h3>
-            <Comments post={item} />
+            <Comments post={item} setOpen={setOpen} />
           </Box>
         </CardContent>
       </Card>
