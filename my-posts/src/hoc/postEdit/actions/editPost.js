@@ -18,6 +18,7 @@ export async function editPost(
       title,
       body,
       category,
+      token: localStorage.getItem("token"),
     },
   })
     .then((res) => {

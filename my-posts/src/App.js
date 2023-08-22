@@ -107,10 +107,14 @@ const App = () => {
                   headers={{
                     Authorization: `Bearer ${localStorage
                       .getItem("token")
-                      .substring(1, localStorage.getItem("token").length - 1)}`,
+                      ?.substring(
+                        1,
+                        localStorage.getItem("token").length - 1
+                      )}`,
                     author: localStorage
                       .getItem("user")
-                      .substring(1, localStorage.getItem("user").length - 1),
+                      ?.substring(1, localStorage.getItem("user").length - 1),
+                    token: localStorage.getItem("token"),
                   }}
                   stateName="myPosts"
                 />
