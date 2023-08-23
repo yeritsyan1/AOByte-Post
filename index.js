@@ -121,21 +121,34 @@ app.post("/post", async (req, res) => {
 });
 
 // get posts list
-app.get("/posts", (req, res) => {
-  const { isactive } = req.headers;
+app.get("/posts", async (req, res) => {
+  const { isactive, currentpage, perpage } = req.headers;
+  const totalCount = await Post.find({ isActive: isactive }).then(
+    (posts) => posts.length
+  );
+
   Post.find({ isActive: isactive })
-    .then((allPosts) => res.json(allPosts))
+    .skip((currentpage - 1) * perpage)
+    .limit(perpage)
+    .then((allPosts) => res.json({ allPosts, totalCount }))
     .catch(() => res.status(400).json({ message: "Something went wrong." }));
 });
 
 // get my posts
 app.get("/myPost", async (req, res) => {
+  const { currentpage, perpage } = req.headers;
   const receivedToken = await req.headers.authorization.split(" ")[1];
+  const totalCount = await Post.find({
+    author: { $regex: req.headers.author },
+  }).then((posts) => posts.length);
 
   try {
-    Post.find({ author: { $regex: req.headers.author } }).then((posts) => {
-      return res.json(posts);
-    });
+    Post.find({ author: { $regex: req.headers.author } })
+      .skip((currentpage - 1) * perpage)
+      .limit(perpage)
+      .then((posts) => {
+        return res.json({ allPosts: posts, totalCount });
+      });
   } catch (err) {
     res.json({ message: "err", err });
   }
@@ -275,8 +288,11 @@ app.get("/filterposts", async (req, res) => {
   if (title !== "undefined") {
     pipe[0].$match["title"] = new RegExp(title, "i");
   }
+  const totalCount = await Post.aggregate(pipe).then(
+    (allPosts) => allPosts.length
+  );
   const filter = await Post.aggregate(pipe)
-    .then((posts) => res.status(200).json(posts))
+    .then((posts) => res.status(200).json({ allPosts: posts, totalCount }))
     .catch(() => res.status(400).json({ message: "Failed to load" }));
 });
 

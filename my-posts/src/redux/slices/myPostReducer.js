@@ -1,11 +1,9 @@
 export const actionMyPosts = "get-my-posts";
-export const initialMyPostsReducer = [];
+export const initialMyPostsReducer = { allPosts: [], totalCount: 0 };
 
-export const myPostReducer = (state = [], action) => {
+export const myPostReducer = (state = initialMyPostsReducer, action) => {
   if (action.type === actionMyPosts) {
-    return action.payload.myPosts.sort((a, b) => {
-      return b.date - a.date;
-    });
+    return action.payload.myPosts;
   }
   return state;
 };
@@ -13,32 +11,3 @@ export const myPostReducer = (state = [], action) => {
 export const selectMyPosts = function (state) {
   return state.myPosts;
 };
-
-// export const updateMyPosts = (newPost) => {
-//   return {
-//     type: actionMyPosts,
-//     payload: {
-//       myPosts: newPost,
-//     },
-//   };
-// };
-
-// export const latestMyPost = () => {
-//   const token = localStorage.getItem("token");
-//   const author = localStorage.getItem("user");
-//   return (dispatch) => {
-//     fetch("/myPost", {
-//       headers: {
-//         Authorization: `Bearer ${token.substring(1, token.length - 1)}`,
-//         author: author.substring(1, author.length - 1),
-//         Authorization: `Bearer ${localStorage.getItem("token").substring(1, localStorage.getItem("token").length - 1)}`,
-//         author: localStorage.getItem("user").substring(1, localStorage.getItem("user").length - 1),
-//       },
-//     })
-//       .then((res) => res.json())
-//       .then((res) => dispatch(updateMyPosts(res)))
-//       .catch(() => {
-//         return;
-//       });
-//   };
-// };

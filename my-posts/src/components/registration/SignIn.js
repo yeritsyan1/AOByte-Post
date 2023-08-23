@@ -74,6 +74,7 @@ const SignIn = (props) => {
                 })
                 .then((res) => {
                   localStorage.setItem("token", JSON.stringify(res.token));
+                  localStorage.setItem("currentUser", JSON.stringify(res.user));
                   setError(res.message);
                 })
                 .catch((err) => console.log(err, "Try again"));

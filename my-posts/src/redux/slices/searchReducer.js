@@ -1,7 +1,7 @@
 export const filterAction = "search-posts";
-export const initialFilterReducer = [];
+export const initialFilterReducer = { allPosts: [], totalCount: 0 };
 
-export const filterReducer = (state = [], action) => {
+export const filterReducer = (state = initialFilterReducer, action) => {
   if (action.type === filterAction) {
     return action.payload.filteredPosts;
   }
@@ -9,9 +9,7 @@ export const filterReducer = (state = [], action) => {
 };
 
 export const selectFilteredPosts = (state) => {
-  return state.filteredPosts.sort((a, b) => {
-    return b.date - a.date;
-  });
+  return state.filteredPosts;
 };
 
 const updateFilter = (newValue) => {

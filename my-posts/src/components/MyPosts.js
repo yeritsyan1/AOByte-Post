@@ -6,7 +6,7 @@ export default function MyPosts(props) {
   return (
     <div style={{ paddingLeft: "15px" }}>
       <h1> My Posts </h1>
-      <h2> You have {posts.length} posts. </h2>
+      <h2> You have {posts.totalCount} posts. </h2>
     </div>
   );
 }
