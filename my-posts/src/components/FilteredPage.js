@@ -7,6 +7,8 @@ import { v4 as uuid } from "uuid";
 import SignIn from "./registration/SignIn";
 import EmptyComponent from "../hoc/props/EmptyComponent";
 import NavTabs from "./navigation/HeaderNavigation";
+import { PERPAGE } from "../constants/constants";
+import { Pagination } from "@mui/material";
 
 export default function FilteredPage() {
   const [open, setOpen] = useState(false);
@@ -19,6 +21,7 @@ export default function FilteredPage() {
   const params = { isActive: true };
   const dispatch = useDispatch();
   const posts = useSelector(selectFilteredPosts);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (searchCategory) {
@@ -40,7 +43,17 @@ export default function FilteredPage() {
     <div>
       <NavTabs />
       <h1> Filtered Page </h1>
-      {posts.map((item) => {
+      {!posts.totalCount || (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination
+            color="primary"
+            count={Math.ceil(posts.totalCount / PERPAGE)}
+            page={currentPage}
+            onChange={(event, value) => setCurrentPage(value)}
+          />
+        </div>
+      )}
+      {posts.allPosts.map((item) => {
         return (
           <Post
             key={uuid()}
@@ -50,6 +63,16 @@ export default function FilteredPage() {
           />
         );
       })}
+      {!posts.totalCount || (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination
+            color="primary"
+            count={Math.ceil(posts.totalCount / PERPAGE)}
+            page={currentPage}
+            onChange={(event, value) => setCurrentPage(value)}
+          />
+        </div>
+      )}
       <SignIn open={open} setOpen={setOpen} />
     </div>
   );

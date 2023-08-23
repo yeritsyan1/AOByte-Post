@@ -1,7 +1,7 @@
 export const actionPost = "latest-post";
-export const initialPostreducer = [];
+export const initialPostreducer = { allPosts: [], totalCount: 0 };
 
-export function postReducer(state = [], action) {
+export function postReducer(state = initialPostreducer, action) {
   if (action.type === actionPost) {
     return action.payload.posts;
   }
@@ -9,39 +9,5 @@ export function postReducer(state = [], action) {
 }
 
 export function selectPost(state) {
-  return state.posts.sort((a, b) => {
-    return b.date - a.date;
-  });
+  return state.posts;
 }
-
-// export const updatePosts = (newPost) => {
-//   return {
-//     type: actionPost,
-//     payload: {
-//       posts: newPost,
-//     },
-//   };
-// };
-
-//export const latestPost = () => {
-// return (dispatch) => {
-//   fetch("/posts", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       isActive: true
-//     }
-//   })
-//     .then((res) => {
-//       if(res.status === 200) {
-//         return res.json();
-//       }
-//     })
-//     .then((res) => {
-//       return dispatch(updatePosts(res));
-//     })
-//     .catch(() => {
-//       return;
-//     });
-// };
-//};

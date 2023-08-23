@@ -12,12 +12,14 @@ export const latestSomething = (
   updateSomething,
   action,
   headers,
-  stateName
+  stateName,
+  currentPage, 
+  PERPAGE
 ) => {
   return (dispatch) => {
     fetch(path, {
       method: "GET",
-      headers: headers,
+      headers: {...headers, currentpage: currentPage, perpage: PERPAGE},
     })
       .then((res) => {
         if (res.status === 200) {
