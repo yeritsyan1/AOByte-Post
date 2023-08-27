@@ -19,42 +19,31 @@ const Post = (props) => {
   const [showAll, setShowAll] = useState(false);
   const posts = useSelector(selectPost);
   const checkLiked = item.likedUser.find(
-    (item) => item === "64d7d54c30c47cdaca4e91a9"
+    (item) =>
+      item._id === JSON.stringify(localStorage.getItem("currentUser"))._id
   );
-
-  /*  const rateComment = async (elem) => {
-  item.comments.map((item) => {
-        if (item.id === elem.id) {
-          return {
-            ...elem,
-            rate: item.rate + 1,
-            ratedUser: [
-              ...elem.ratedUser,
-              JSON.parse(localStorage.getItem(USER)).providerData[0].email,
-            ],
-          };
-        } else {
-          return item;
-        }
-      })
-  }; */
 
   const dispatch = useDispatch();
   const onLike = async () => {
     await dispatch({
       type: actionPost,
       payload: {
-        posts: posts.map((currentPost) => {
-          if (item._id === currentPost._id) {
-            return {
-              ...item,
-              rate: ++item.rate,
-              likedUser: ["64d7d54c30c47cdaca4e91a9"],
-            };
-          } else {
-            return currentPost;
-          }
-        }),
+        posts: {
+          ...posts,
+          allPosts: posts.allPosts.map((currentPost) => {
+            if (item._id === currentPost._id) {
+              return {
+                ...item,
+                rate: ++item.rate,
+                likedUser: [
+                  JSON.parse(localStorage.getItem("currentUser"))?._id,
+                ],
+              };
+            } else {
+              return currentPost;
+            }
+          }),
+        },
       },
     });
 
@@ -67,7 +56,7 @@ const Post = (props) => {
       body: JSON.stringify({
         _id: item._id,
         rate: item.rate,
-        likedUser: "64d7d54c30c47cdaca4e91a9",
+        likedUser: JSON.parse(localStorage.getItem("currentUser"))?._id,
       }),
     });
   };
@@ -82,7 +71,9 @@ const Post = (props) => {
         token: localStorage.getItem("token"),
       },
       body: JSON.stringify({
-        author: { email: "Tigran" },
+        author: {
+          email: JSON.parse(localStorage.getItem("currentUser"))?.email,
+        },
         body: comment,
         date: Date.now(),
         rate: 0,

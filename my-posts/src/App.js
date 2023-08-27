@@ -3,14 +3,13 @@ import SignUp from "./components/registration/SignUp";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./components/registration/SignIn";
 import { CreatePostWithHOC } from "./hoc/props/EmptyComponent";
-//import Profile from "./components/Profile";
 import ProtectRoute from "./components/ProtectRoute";
 import ProtectLogin from "./components/registration/ProtectLogin";
 import {
   CREATEPOST,
   MYPOSTS,
   POST,
-  /* PROFILE, */ SIGNIN,
+  SIGNIN,
   SIGNUP,
   USER,
 } from "./constants/constants";
@@ -18,15 +17,8 @@ import PageNotFound from "./components/PageNotFound";
 import { NewsFeedWithPostHOC } from "./components/NewsFeed";
 import { MyPostWithPostHOC } from "./components/MyPosts";
 import PostPage from "./components/PostPage";
-import {
-  selectMyPosts,
-  /* latestMyPost, */ actionMyPosts,
-} from "./redux/slices/myPostReducer";
-import {
-  selectPost,
-  latestPost,
-  updatePosts,
-} from "./redux/slices/postReducer";
+import { selectMyPosts, actionMyPosts } from "./redux/slices/myPostReducer";
+import { selectPost } from "./redux/slices/postReducer";
 import AdditionalActions from "./hoc/props/AdditionalActions";
 import EmptyComponent from "./hoc/props/EmptyComponent";
 import FilteredPage from "./components/FilteredPage";
@@ -64,7 +56,6 @@ const App = () => {
             element={
               <NewsFeedWithPostHOC
                 selectPost={selectPost}
-                //latestPost={latestPost}
                 AdditionalActions={EmptyComponent}
                 path="/posts"
                 action={actionPost}
@@ -100,7 +91,6 @@ const App = () => {
               <ProtectRoute>
                 <MyPostWithPostHOC
                   selectPost={selectMyPosts}
-                  //latestPost={latestMyPost}
                   AdditionalActions={AdditionalActions}
                   path="/myPost"
                   action={actionMyPosts}
@@ -122,14 +112,6 @@ const App = () => {
             }
           ></Route>
           <Route path="/search" element={<FilteredPage />}></Route>
-          {/*  <Route
-            path={`/${PROFILE}`}
-            element={
-              <ProtectRoute>
-                <Profile />
-              </ProtectRoute>
-            }
-          ></Route> */}
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
       </BrowserRouter>

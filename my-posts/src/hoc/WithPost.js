@@ -10,6 +10,7 @@ import { latestSomething } from "../redux/slices/slice";
 import { updateSomething } from "../redux/slices/slice";
 import { Pagination } from "@mui/material";
 import { PERPAGE } from "../constants/constants";
+import { flexStyle } from "../styles";
 
 function withPost(Component) {
   return function (props) {
@@ -43,13 +44,13 @@ function withPost(Component) {
       dispatch(latestComments());
       dispatch(latestReply());
     }, [currentPage]);
-
+    const classes = flexStyle();
     return (
       <>
         <NavTabs />
         <Component posts={posts} />
         {!posts.totalCount || (
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className={classes.parentPagination}>
             <Pagination
               color="primary"
               count={Math.ceil(posts.totalCount / PERPAGE)}
@@ -73,7 +74,7 @@ function withPost(Component) {
             );
           })}
         {!posts.totalCount || (
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className={classes.parentPagination}>
             <Pagination
               color="primary"
               count={Math.ceil(posts.totalCount / PERPAGE)}

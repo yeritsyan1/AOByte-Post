@@ -32,6 +32,8 @@ export const filterPost = (filterBy) => {
         starttime: filterBy.startTime,
         endtime: filterBy.endTime,
         isActive: filterBy.isActive,
+        currentpage: filterBy.currentpage,
+        perpage: filterBy.perpage,
       },
     })
       .then((res) => {
