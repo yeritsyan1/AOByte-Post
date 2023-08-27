@@ -9,8 +9,10 @@ import EmptyComponent from "../hoc/props/EmptyComponent";
 import NavTabs from "./navigation/HeaderNavigation";
 import { PERPAGE } from "../constants/constants";
 import { Pagination } from "@mui/material";
+import { flexStyle } from "../styles";
 
 export default function FilteredPage() {
+  const classes = flexStyle();
   const [open, setOpen] = useState(false);
   const [dynamicURL, setDynamicURL] = useSearchParams();
   const searchCategory = dynamicURL.get("category");
@@ -18,10 +20,10 @@ export default function FilteredPage() {
   const startTime = dynamicURL.get("start");
   const endTime = dynamicURL.get("end");
 
-  const params = { isActive: true };
   const dispatch = useDispatch();
   const posts = useSelector(selectFilteredPosts);
   const [currentPage, setCurrentPage] = useState(1);
+  const params = { isActive: true, currentpage: currentPage, perpage: PERPAGE };
 
   useEffect(() => {
     if (searchCategory) {
@@ -37,14 +39,14 @@ export default function FilteredPage() {
       params.endTime = endTime;
     }
     dispatch(filterPost(params));
-  }, []);
+  }, [currentPage]);
 
   return (
     <div>
       <NavTabs />
       <h1> Filtered Page </h1>
       {!posts.totalCount || (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className={classes.parentPagination}>
           <Pagination
             color="primary"
             count={Math.ceil(posts.totalCount / PERPAGE)}
@@ -64,7 +66,7 @@ export default function FilteredPage() {
         );
       })}
       {!posts.totalCount || (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className={classes.parentPagination}>
           <Pagination
             color="primary"
             count={Math.ceil(posts.totalCount / PERPAGE)}
