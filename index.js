@@ -1,13 +1,24 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-import User from "./backend/models/User.js";
-import Post from "./backend/models/Post.js";
-import Comment from "./backend/models/Comments.js";
-import Reply from "./backend/models/Reply.js";
 import cookieParser from "cookie-parser";
+import { signin } from "./backend/server/service/registration/signin.js";
+import { createPost } from "./backend/server/service/createPost.js";
+import { allPosts } from "./backend/server/service/allPost.js";
+import { myPost } from "./backend/server/service/myPosts.js";
+import { comments } from "./backend/server/service/comments/getComments.js";
+import { sendComment } from "./backend/server/service/comments/sendComment.js";
+import { reply } from "./backend/server/service/comments/getReply.js";
+import { sendReply } from "./backend/server/service/comments/sendReply.js";
+import { sendReReply } from "./backend/server/service/comments/sendReReply.js";
+import { like } from "./backend/server/service/like.js";
+import { isAcitve } from "./backend/server/service/isActive.js";
+import { filterPosts } from "./backend/server/service/filterPosts.js";
+import { editPost } from "./backend/server/service/editPost.js";
+import { deletePost } from "./backend/server/service/delete.js";
+import { onePost } from "./backend/server/service/onePost.js";
+import { signup } from "./backend/server/service/registration/signup.js";
 
 const app = express();
 app.use(express.static("./my-posts/build"));
@@ -25,7 +36,6 @@ app.use("/isActive", validationToken);
 app.use("/editPost", validationToken);
 app.use("/deletePost", validationToken);
 
-//const url = process.env.MONGO_DB_URL;
 mongoose.connect(
   "mongodb+srv://tyeritsyan1:kaxZGzlq8k7M3um6@userpost.8oagrcs.mongodb.net/?retryWrites=true&w=majority",
   {
@@ -34,7 +44,7 @@ mongoose.connect(
   }
 );
 
-const generateAccessToken = (id) => {
+export const generateAccessToken = (id) => {
   const payload = { id };
   return jsonwebtoken.sign(payload, "secret", { expiresIn: "24h" });
 };
@@ -50,297 +60,52 @@ async function validationToken(req, res, next) {
   }
 }
 
-app.post("/signup", async (req, res) => {
-  try {
-    const { email, password, isEmailVerify } = req.body;
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "This email is already registered." });
-    }
-
-    const hashPassword = bcryptjs.hashSync(password, 7);
-    const newUser = new User({ email, password: hashPassword, isEmailVerify });
-    await newUser.save();
-    res
-      .status(200)
-      .json({ message: "Congratulations your account has been created!" });
-  } catch {
-    res.status(400).send("Sign up error");
-  }
-});
+// sign up
+app.post("/signup", signup);
 
 // sign in
-app.post("/signin", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ message: `'${email}' not found.`, statusCode: 400 });
-    }
-
-    const validPassword = bcryptjs.compareSync(password, user.password);
-    if (!validPassword) {
-      return res.status(400).json({ message: "Password is incorrect" });
-    }
-    const token = generateAccessToken(user._id);
-    return res.status(200).json({ message: "", user, token });
-  } catch (err) {
-    res.status(400).json({ message: "Login error" });
-  }
-});
+app.post("/signin", signin);
 
 // create new post
-app.post("/post", async (req, res) => {
-  try {
-    const { author, title, body, comments, category, rate, date, isActive } =
-      req.body;
-
-    const newPost = new Post({
-      author,
-      title,
-      body,
-      comments,
-      category,
-      date,
-      rate,
-      isActive,
-    });
-    const post = await newPost.save();
-    return res.status(200).json({ message: "Success" });
-  } catch (err) {
-    console.log("error: ", err);
-    res.status(400).json({ message: "Failed to add post." });
-  }
-});
+app.post("/post", createPost);
 
 // get posts list
-app.get("/posts", async (req, res) => {
-  const { isactive, currentpage, perpage } = req.headers;
-  const totalCount = await Post.find({ isActive: isactive }).then(
-    (posts) => posts.length
-  );
-
-  Post.find({ isActive: isactive })
-    .skip((currentpage - 1) * perpage)
-    .limit(perpage)
-    .then((allPosts) => res.json({ allPosts, totalCount }))
-    .catch(() => res.status(400).json({ message: "Something went wrong." }));
-});
+app.get("/posts", allPosts);
 
 // get my posts
-app.get("/myPost", async (req, res) => {
-  const { currentpage, perpage } = req.headers;
-  const receivedToken = await req.headers.authorization.split(" ")[1];
-  const totalCount = await Post.find({
-    author: { $regex: req.headers.author },
-  }).then((posts) => posts.length);
-
-  try {
-    Post.find({ author: { $regex: req.headers.author } })
-      .skip((currentpage - 1) * perpage)
-      .limit(perpage)
-      .then((posts) => {
-        return res.json({ allPosts: posts, totalCount });
-      });
-  } catch (err) {
-    res.json({ message: "err", err });
-  }
-});
+app.get("/myPost", myPost);
 
 // get comments
-app.get("/comment", (req, res) => {
-  try {
-    Comment.find().then((comments) => res.json(comments));
-  } catch (err) {
-    res.status(400).json({ message: "Failed to load." });
-  }
-});
+app.get("/comment", comments);
 
 // send new comment
-app.post("/sendComment", async (req, res) => {
-  const { author, body, date, rate, postId } = req.body;
-
-  try {
-    const comment = new Comment({
-      author,
-      body,
-      date,
-      rate,
-      postId,
-    });
-    const saveComment = await comment.save();
-    res.json({ message: "Send" });
-  } catch (err) {
-    res.status(400).json({ message: "Something went wrong." });
-  }
-});
+app.post("/sendComment", sendComment);
 
 // get reply
-app.get("/reply", (req, res) => {
-  try {
-    Reply.find().then((reply) => res.json(reply));
-  } catch (err) {
-    res.status(400).json({ message: "Failed to load." });
-  }
-});
+app.get("/reply", reply);
 
 // send reply
-app.post("/sendReply", async (req, res) => {
-  const { author, body, date, rate, replies, parentId, idReplyParent } =
-    req.body;
+app.post("/sendReply", sendReply);
 
-  try {
-    const reply = new Reply({
-      author,
-      body,
-      date,
-      rate,
-      replies,
-      parentId,
-      idReplyParent,
-    });
-    await reply.save();
-    res.json({ message: "Send reply" });
-  } catch (err) {
-    res.status(400).json({ message: "Something went wrong." });
-  }
-});
-
-// send reply
-app.post("/sendReReply", async (req, res) => {
-  const { author, body, date, rate, replies, parentId, idReplyParent } =
-    req.body;
-
-  try {
-    const reply = new Reply({
-      author,
-      body,
-      date,
-      rate,
-      replies,
-      parentId,
-      idReplyParent,
-    });
-    const saveReply = await reply.save();
-    res.json({ message: "Send reply" });
-  } catch (err) {
-    res.status(400).json({ message: "Something went wrong." });
-  }
-});
+// send reReply
+app.post("/sendReReply", sendReReply);
 
 // update like
-app.put("/like", async (req, res) => {
-  const { rate, _id, likedUser } = req.body;
+app.put("/like", like);
 
-  try {
-    const updateResult = await Post.updateOne(
-      { _id: _id },
-      { $addToSet: { likedUser }, $set: { rate } }
-    ).exec();
-    if (updateResult.nModified === 1) {
-      res.status(200).json({ message: "Post updated successfully" });
-    } else {
-      res.status(404).json({ message: "Post not found or no changes made" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: "Error updating post" });
-  }
-});
-
-// update post isAcitve
-app.put("/isActive", async (req, res) => {
-  const { isActive, _id } = req.body;
-  try {
-    const updateResult = await Post.updateOne(
-      { _id: _id },
-      { $set: { isActive: isActive } }
-    ).exec();
-    if (updateResult.nModified === 1) {
-      res.status(200).json({ message: "Post updated successfully " });
-    } else {
-      res.status(404).json({ message: "Post not found or no changes made" });
-    }
-  } catch (error) {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-});
+// update post isActive
+app.put("/isActive", isAcitve);
 
 // filter posts
-app.get("/filterposts", async (req, res) => {
-  const { title, category, starttime, endtime, currentpage, perpage } = req.headers;
- const $match =  {
-    isActive: true,
-    category: category,
-    date: { $gte: Number(starttime), $lte: Number(endtime) },
-  }
-
-  const pipe = [
-    {$match},
-   { $skip: (currentpage - 1) * perpage},
-    { $limit: Number(perpage) }
-  ];
-  if (title !== "undefined") {
-    pipe[0].$match["title"] = new RegExp(title, "i");
-  }
-
-  const totalCount =  await Post.aggregate([{$match}]).then(
-    (allPosts) => allPosts.length
-  );
- await Post.aggregate(pipe)
-    .then((posts) => res.status(200).json({ allPosts: posts, totalCount }))
-    .catch(() => res.status(400).json({ message: "Failed to load" }));
-});
+app.get("/filterposts", filterPosts);
 
 // edit post
-app.put("/editPost", (req, res) => {
-  const { _id, title, body, category } = req.headers;
-  try {
-    const updateResult = Post.updateOne(
-      { _id },
-      {
-        $set: {
-          title,
-          body,
-          category,
-        },
-      }
-    ).exec();
-    if (updateResult.nModified === 1) {
-      res.status(200).json({ message: "Post not found or no changes made" });
-    } else {
-      res.status(400).json({ message: "Post updated successfull" });
-    }
-  } catch {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-});
+app.put("/editPost", editPost);
 
 // delete post
-app.delete("/deletePost", async (req, res) => {
-  const { _id } = req.headers;
-  try {
-    await Post.deleteOne({ _id });
-    res.status(200).json({ message: "Post deleted" });
-  } catch {
-    res.status(400).json({ message: "Something went wrong" });
-  }
-});
+app.delete("/deletePost", deletePost);
 
 // onePost
-app.post("/postPage", async (req, res) => {
-  try {
-    await Post.find({ _id: req.body.id }).then((post) => {
-      return res.status(200).json(post);
-    });
-  } catch {
-    return;
-  }
-});
+app.post("/postPage", onePost);
 
 app.listen(process.env.PORT || 3001);
