@@ -34,9 +34,8 @@ export default function NavTabs() {
           },
         ].map((tab) => {
           return (
-            <Button onClick={tab.action}>
+            <Button key={uuid()} onClick={tab.action}>
               <Link
-                key={uuid()}
                 to={tab.path}
                 style={{
                   color: path === tab.path ? "white" : "red",

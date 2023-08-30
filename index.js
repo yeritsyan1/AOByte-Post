@@ -19,6 +19,8 @@ import { editPost } from "./backend/server/service/editPost.js";
 import { deletePost } from "./backend/server/service/delete.js";
 import { onePost } from "./backend/server/service/onePost.js";
 import { signup } from "./backend/server/service/registration/signup.js";
+import { verifyEmail } from "./backend/server/service/verifyEmail.js";
+import { updateVerify } from "./backend/server/service/updateVerify.js";
 
 const app = express();
 app.use(express.static("./my-posts/build"));
@@ -35,6 +37,7 @@ app.use("/like", validationToken);
 app.use("/isActive", validationToken);
 app.use("/editPost", validationToken);
 app.use("/deletePost", validationToken);
+app.use("/verifyEmail", validationToken);
 
 mongoose.connect(
   "mongodb+srv://tyeritsyan1:kaxZGzlq8k7M3um6@userpost.8oagrcs.mongodb.net/?retryWrites=true&w=majority",
@@ -107,5 +110,11 @@ app.delete("/deletePost", deletePost);
 
 // onePost
 app.post("/postPage", onePost);
+
+// verify email
+app.post("/email", verifyEmail);
+
+// update email
+app.put("/updateVerify", updateVerify);
 
 app.listen(process.env.PORT || 3001);
