@@ -86,7 +86,7 @@ const App = () => {
             }
           ></Route>
           <Route
-            path={MYPOSTS}
+            path={`${MYPOSTS}/*`}
             element={
               <ProtectRoute>
                 <MyPostWithPostHOC
