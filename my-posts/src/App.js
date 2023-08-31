@@ -11,6 +11,7 @@ import {
   POST,
   SIGNIN,
   SIGNUP,
+  TOKEN,
   USER,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
@@ -95,16 +96,14 @@ const App = () => {
                   path="/myPost"
                   action={actionMyPosts}
                   headers={{
-                    Authorization: `Bearer ${localStorage
-                      .getItem("token")
-                      ?.substring(
-                        1,
-                        localStorage.getItem("token").length - 1
-                      )}`,
+                    Authorization: `Bearer ${TOKEN?.substring(
+                      1,
+                      TOKEN.length - 1
+                    )}`,
                     author: localStorage
                       .getItem("user")
                       ?.substring(1, localStorage.getItem("user").length - 1),
-                    token: localStorage.getItem("token"),
+                    token: TOKEN,
                   }}
                   stateName="myPosts"
                 />

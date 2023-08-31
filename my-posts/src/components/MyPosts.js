@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import withPost from "../hoc/WithPost";
 import { Button } from "@mui/material";
 import SnackbarMessage from "./Snackbar";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
+import { CURRENTUSER, TOKEN } from "../constants/constants";
 
 export default function MyPosts(props) {
   const { posts } = props;
   const [message, setMessage] = useState(null);
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const token = JSON.parse(localStorage.getItem("token"));
+  const currentUser = JSON.parse(CURRENTUSER);
+  const token = JSON.parse(TOKEN);
   const verifyPath = useLocation();
 
   const verify = async () => {

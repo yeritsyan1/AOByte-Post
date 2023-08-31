@@ -1,3 +1,5 @@
+import { TOKEN } from "../../../constants/constants";
+
 export async function createPost(
   _id,
   user,
@@ -14,7 +16,7 @@ export async function createPost(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      token: localStorage.getItem("token"),
+      token: TOKEN,
     },
     body: JSON.stringify({
       author: user,

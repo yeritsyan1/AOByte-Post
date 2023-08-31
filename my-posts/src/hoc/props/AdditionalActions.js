@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { editPost } from "../postEdit/actions/editPost";
 import { EditPostWithHOC } from "./EmptyComponent";
 import SnackbarMessage from "../../components/Snackbar";
+import { TOKEN } from "../../constants/constants";
 
 export default function AdditionalActions(props) {
   const { item } = props;
@@ -16,7 +17,7 @@ export default function AdditionalActions(props) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
       body: JSON.stringify({
         _id: item._id,
@@ -36,7 +37,7 @@ export default function AdditionalActions(props) {
       method: "DELETE",
       headers: {
         _id: item._id,
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
     })
       .then((res) => {
