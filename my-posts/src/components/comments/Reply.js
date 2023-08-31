@@ -1,31 +1,17 @@
 import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { CURRENTUSER, TOKEN } from "../../constants/constants";
+import { useDispatch } from "react-redux";
+import { newReReply } from "../../redux/slices/replyReducer";
 
 export default function Reply(props) {
   const { rep, setOpen } = props;
   const [reReply, setReReply] = useState("");
+  const dispatch = useDispatch();
 
-  const sendReReply = async () => {
-    TOKEN || setOpen(true);
-    await fetch("/sendReReply", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token: TOKEN,
-      },
-      body: JSON.stringify({
-        author: { email: JSON.parse(CURRENTUSER)._id },
-        body: reReply,
-        date: Date.now(),
-        rate: 0,
-        parentId: null,
-        idReplyParent: rep._id,
-      }),
-    }).then(() => {
-      setReReply("");
-    });
+  const sendReReply = () => {
+    dispatch(newReReply(setOpen, reReply, setReReply, rep));
   };
+
   return (
     <div
       style={{

@@ -8,6 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { SIGNIN } from "../../constants/constants";
+import SnackbarMessage from "../Snackbar";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -87,8 +88,13 @@ const SignUp = () => {
               .then((res) => {
                 setError(res.message);
               })
-              .catch((err) => {
-                console.log(err);
+              .catch(() => {
+                setError("Something went wrong.");
+              })
+              .then(() => {
+                setTimeout(() => {
+                  setError(null);
+                }, 2000);
               });
           }}
         >
@@ -98,6 +104,7 @@ const SignUp = () => {
       <DialogActions>
         <a href={`/${SIGNIN}`}> Sign In </a>
       </DialogActions>
+      {!!error && <SnackbarMessage message={error} />}
     </Dialog>
   );
 };

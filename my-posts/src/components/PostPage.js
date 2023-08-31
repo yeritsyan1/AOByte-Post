@@ -24,6 +24,7 @@ export default function PostPage() {
       return navigate("/");
     }
     if (!item) {
+      // If the user types the post ID in the URL
       fetch("/postPage", {
         method: "POST",
         headers: {

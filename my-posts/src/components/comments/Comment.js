@@ -3,33 +3,17 @@ import React, { useState } from "react";
 import Replies from "./Replies";
 import Reply from "./Reply";
 import { v4 as uuid } from "uuid";
-import { useSelector } from "react-redux";
-import { selectReply } from "../../redux/slices/replyReducer";
-import { CURRENTUSER, TOKEN } from "../../constants/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { newReply, selectReply } from "../../redux/slices/replyReducer";
 
 export default function Comment(props) {
   const { comment, setOpen } = props;
   const [message, setMessage] = useState("");
   const reply = useSelector(selectReply);
+  const dispatch = useDispatch();
 
-  const sendReply = async () => {
-    await setMessage("");
-    TOKEN || setOpen(true);
-    await fetch("/sendReply", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token: TOKEN,
-      },
-      body: JSON.stringify({
-        author: { email: JSON.parse(CURRENTUSER)._id },
-        body: message,
-        date: Date.now(),
-        rate: 0,
-        parentId: comment._id,
-        idReplyParent: null,
-      }),
-    });
+  const sendReply = () => {
+    return dispatch(newReply(message, setMessage, setOpen, comment));
   };
 
   return (
