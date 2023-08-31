@@ -1,7 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { Link, useLocation } from "react-router-dom";
-import { CREATEPOST, MYPOSTS, SIGNIN } from "../../constants/constants";
+import { useLocation } from "react-router-dom";
+import {
+  CREATEPOST,
+  CURRENTUSER,
+  MYPOSTS,
+  SIGNIN,
+} from "../../constants/constants";
 import { v4 as uuid } from "uuid";
 import { Button } from "@mui/material";
 
@@ -27,16 +32,16 @@ export default function NavTabs() {
           { name: "Home", path: "/" },
           { name: "My Posts", path: `/${MYPOSTS}` },
           { name: "Create Post", path: `/${CREATEPOST}` },
-          {
+          !!CURRENTUSER && {
             name: "Log Out",
             path: `/${SIGNIN}`,
             action: () => localStorage.clear(),
           },
         ].map((tab) => {
           return (
-            <Button key={uuid()} onClick={tab.action}>
-              <Link
-                to={tab.path}
+            <Button key={uuid()} onClick={tab?.action}>
+              <a
+                href={`${tab.path}`}
                 style={{
                   color: path === tab.path ? "white" : "red",
                   padding: "15px",
@@ -44,7 +49,7 @@ export default function NavTabs() {
                 }}
               >
                 {tab.name}
-              </Link>
+              </a>
             </Button>
           );
         })}

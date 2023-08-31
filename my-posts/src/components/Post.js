@@ -11,7 +11,9 @@ import CardActions from "@mui/material/CardActions";
 import { CURRENTUSER, POST, TOKEN, USER } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { actionPost, selectPost } from "../redux/slices/postReducer";
+import { selectPost } from "../redux/slices/postReducer";
+import { updateLike } from "../redux/slices/like";
+import { addComment } from "../redux/slices/commentsReducer";
 
 const Post = (props) => {
   const { setOpen, item, AdditionalActions } = props;
@@ -23,60 +25,12 @@ const Post = (props) => {
   );
 
   const dispatch = useDispatch();
-  const onLike = async () => {
-    await dispatch({
-      type: actionPost,
-      payload: {
-        posts: {
-          ...posts,
-          allPosts: posts.allPosts.map((currentPost) => {
-            if (item._id === currentPost._id) {
-              return {
-                ...item,
-                rate: ++item.rate,
-                likedUser: [JSON.parse(CURRENTUSER)?._id],
-              };
-            } else {
-              return currentPost;
-            }
-          }),
-        },
-      },
-    });
-
-    await fetch("/like", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        token: TOKEN,
-      },
-      body: JSON.stringify({
-        _id: item._id,
-        rate: item.rate,
-        likedUser: JSON.parse(CURRENTUSER)?._id,
-      }),
-    });
+  const onLike = () => {
+    dispatch(updateLike(posts.allPosts, item));
   };
 
-  const sendComment = async () => {
-    await setComment("");
-    localStorage.getItem(USER) || setOpen(true);
-    fetch("/sendComment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token: TOKEN,
-      },
-      body: JSON.stringify({
-        author: {
-          email: JSON.parse(CURRENTUSER)?._id,
-        },
-        body: comment,
-        date: Date.now(),
-        rate: 0,
-        postId: item._id,
-      }),
-    });
+  const sendComment = () => {
+    dispatch(addComment(setComment, setOpen, comment, item));
   };
 
   return (

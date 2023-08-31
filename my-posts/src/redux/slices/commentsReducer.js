@@ -1,3 +1,5 @@
+import { CURRENTUSER, TOKEN, USER } from "../../constants/constants";
+
 const actionComments = "change-comments";
 export const initialCommentsReducer = [];
 
@@ -33,5 +35,30 @@ export const latestComments = () => {
       .catch(() => {
         return;
       });
+  };
+};
+
+export const addComment = (setComment, setOpen, comment, item) => {
+  return (dispatch) => {
+    setComment("");
+    localStorage.getItem(USER) || setOpen(true);
+    fetch("/sendComment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: TOKEN,
+      },
+      body: JSON.stringify({
+        author: {
+          email: JSON.parse(CURRENTUSER)?._id,
+        },
+        body: comment,
+        date: Date.now(),
+        rate: 0,
+        postId: item._id,
+      }),
+    }).then(() => {
+      return dispatch(latestComments());
+    });
   };
 };

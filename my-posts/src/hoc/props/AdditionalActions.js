@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { editPost } from "../postEdit/actions/editPost";
 import { EditPostWithHOC } from "./EmptyComponent";
 import SnackbarMessage from "../../components/Snackbar";
-import { TOKEN } from "../../constants/constants";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../../redux/slices/deletePost";
+import { changeActive } from "../../redux/slices/myPostReducer";
 
 export default function AdditionalActions(props) {
   const { item } = props;
@@ -12,45 +14,13 @@ export default function AdditionalActions(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
 
-  const onActive = async () => {
-    await fetch("/isActive", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        token: TOKEN,
-      },
-      body: JSON.stringify({
-        _id: item._id,
-        isActive: !item.isActive,
-      }),
-    })
-      .then((res) => res.json())
-      .catch(() => {
-        return;
-      });
-    await setIsClicked(true);
-    await setName(item.isActive ? "Passive" : "Active");
+  const dispatch = useDispatch();
+  const onDelete = async () => {
+    await dispatch(deletePost(item._id, setMessage));
   };
 
-  const onDelete = async () => {
-    await fetch("/deletePost", {
-      method: "DELETE",
-      headers: {
-        _id: item._id,
-        token: TOKEN,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setMessage(res.message);
-      })
-      .then(() => {
-        setTimeout(() => {
-          setMessage(null);
-        }, 2000);
-      });
+  const onActive = () => {
+    dispatch(changeActive(item, setIsClicked, setName));
   };
 
   return (
