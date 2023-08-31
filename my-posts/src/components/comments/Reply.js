@@ -1,20 +1,21 @@
 import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { CURRENTUSER, TOKEN } from "../../constants/constants";
 
 export default function Reply(props) {
   const { rep, setOpen } = props;
   const [reReply, setReReply] = useState("");
 
   const sendReReply = async () => {
-    localStorage.getItem("token") || setOpen(true);
+    TOKEN || setOpen(true);
     await fetch("/sendReReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
       body: JSON.stringify({
-        author: { email: "Tigran" },
+        author: { email: JSON.parse(CURRENTUSER)._id },
         body: reReply,
         date: Date.now(),
         rate: 0,

@@ -5,6 +5,7 @@ import Reply from "./Reply";
 import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import { selectReply } from "../../redux/slices/replyReducer";
+import { CURRENTUSER, TOKEN } from "../../constants/constants";
 
 export default function Comment(props) {
   const { comment, setOpen } = props;
@@ -13,15 +14,15 @@ export default function Comment(props) {
 
   const sendReply = async () => {
     await setMessage("");
-    localStorage.getItem("token") || setOpen(true);
+    TOKEN || setOpen(true);
     await fetch("/sendReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
       body: JSON.stringify({
-        author: { email: "Tigran" },
+        author: { email: JSON.parse(CURRENTUSER)._id },
         body: message,
         date: Date.now(),
         rate: 0,

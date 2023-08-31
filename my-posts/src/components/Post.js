@@ -8,7 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import CardActions from "@mui/material/CardActions";
-import { POST, USER } from "../constants/constants";
+import { CURRENTUSER, POST, TOKEN, USER } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { actionPost, selectPost } from "../redux/slices/postReducer";
@@ -19,8 +19,7 @@ const Post = (props) => {
   const [showAll, setShowAll] = useState(false);
   const posts = useSelector(selectPost);
   const checkLiked = item.likedUser.find(
-    (item) =>
-      item._id === JSON.stringify(localStorage.getItem("currentUser"))._id
+    (item) => item._id === JSON.stringify(CURRENTUSER)._id
   );
 
   const dispatch = useDispatch();
@@ -35,9 +34,7 @@ const Post = (props) => {
               return {
                 ...item,
                 rate: ++item.rate,
-                likedUser: [
-                  JSON.parse(localStorage.getItem("currentUser"))?._id,
-                ],
+                likedUser: [JSON.parse(CURRENTUSER)?._id],
               };
             } else {
               return currentPost;
@@ -51,12 +48,12 @@ const Post = (props) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
       body: JSON.stringify({
         _id: item._id,
         rate: item.rate,
-        likedUser: JSON.parse(localStorage.getItem("currentUser"))?._id,
+        likedUser: JSON.parse(CURRENTUSER)?._id,
       }),
     });
   };
@@ -68,11 +65,11 @@ const Post = (props) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
+        token: TOKEN,
       },
       body: JSON.stringify({
         author: {
-          email: JSON.parse(localStorage.getItem("currentUser"))?.email,
+          email: JSON.parse(CURRENTUSER)?._id,
         },
         body: comment,
         date: Date.now(),

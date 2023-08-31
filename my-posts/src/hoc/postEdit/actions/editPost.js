@@ -1,3 +1,5 @@
+import { TOKEN } from "../../../constants/constants";
+
 export async function editPost(
   _id,
   user,
@@ -18,7 +20,7 @@ export async function editPost(
       title,
       body,
       category,
-      token: localStorage.getItem("token"),
+      token: TOKEN,
     },
   })
     .then((res) => {
