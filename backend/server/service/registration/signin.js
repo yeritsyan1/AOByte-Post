@@ -1,4 +1,4 @@
-import { generateAccessToken } from "../../../../index.js";
+import { generateAccessToken } from "../../../accessToken.js";
 import User from "../../../models/User.js";
 import bcryptjs from "bcryptjs";
 
