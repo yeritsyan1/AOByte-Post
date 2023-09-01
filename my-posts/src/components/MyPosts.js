@@ -67,6 +67,7 @@ export default function MyPosts(props) {
 
   return (
     <div style={{ paddingLeft: "15px" }}>
+      <h3> {currentUser.email} </h3>
       <h1> My Posts </h1>
       <h2> You have {posts.totalCount} posts. </h2>
       {currentUser.isEmailVerify || (

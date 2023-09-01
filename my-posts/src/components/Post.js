@@ -8,7 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import CardActions from "@mui/material/CardActions";
-import { CURRENTUSER, POST, TOKEN, USER } from "../constants/constants";
+import { POST } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { selectPost } from "../redux/slices/postReducer";
@@ -17,11 +17,12 @@ import { addComment } from "../redux/slices/commentsReducer";
 
 const Post = (props) => {
   const { setOpen, item, AdditionalActions } = props;
+  const currentUser = localStorage.getItem("currentUser");
   const [comment, setComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const posts = useSelector(selectPost);
   const checkLiked = item.likedUser.find(
-    (item) => item._id === JSON.stringify(CURRENTUSER)._id
+    (item) => item === JSON.parse(currentUser)._id
   );
 
   const dispatch = useDispatch();
@@ -84,7 +85,7 @@ const Post = (props) => {
             variant="outlined"
             disabled={!!checkLiked}
             onClick={async () => {
-              (await localStorage.getItem(USER)) || setOpen(true);
+              await (currentUser || setOpen(true));
               await onLike();
             }}
           >

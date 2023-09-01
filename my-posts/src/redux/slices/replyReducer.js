@@ -1,5 +1,3 @@
-import { CURRENTUSER, TOKEN } from "../../constants/constants";
-
 export const initialReply = [];
 export const actionReply = "Reply";
 
@@ -35,17 +33,20 @@ export const latestReply = () => {
 };
 
 export const newReply = (message, setMessage, setOpen, comment) => {
+  const currentUser = localStorage.getItem("currentUser");
+  const token = localStorage.getItem("token");
+
   return (dispatch) => {
     setMessage("");
-    TOKEN || setOpen(true);
+    token || setOpen(true);
     fetch("/sendReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: TOKEN,
+        token,
       },
       body: JSON.stringify({
-        author: { email: JSON.parse(CURRENTUSER)._id },
+        author: { email: JSON.parse(currentUser)._id },
         body: message,
         date: Date.now(),
         rate: 0,
@@ -61,16 +62,19 @@ export const newReply = (message, setMessage, setOpen, comment) => {
 };
 
 export const newReReply = (setOpen, reReply, setReReply, rep) => {
+  const currentUser = localStorage.getItem("currentUser");
+  const token = localStorage.getItem("token");
+
   return (dispatch) => {
-    TOKEN || setOpen(true);
+    token || setOpen(true);
     fetch("/sendReReply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: TOKEN,
+        token,
       },
       body: JSON.stringify({
-        author: { email: JSON.parse(CURRENTUSER)._id },
+        author: { email: JSON.parse(currentUser)._id },
         body: reReply,
         date: Date.now(),
         rate: 0,

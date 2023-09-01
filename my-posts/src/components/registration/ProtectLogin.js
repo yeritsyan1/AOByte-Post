@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { USER } from "../../constants/constants";
+import { CURRENTUSER } from "../../constants/constants";
 
 export default function ProtectLogin(props) {
   const navigate = useNavigate();
-  const auth = localStorage.getItem(USER);
+  const auth = CURRENTUSER;
   const [isLogged, setIsLogged] = useState(null);
 
   useEffect(() => {

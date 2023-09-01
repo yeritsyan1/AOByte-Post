@@ -7,7 +7,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import HouseIcon from "@mui/icons-material/House";
 import SnackbarMessage from "../../components/Snackbar";
-import { USER } from "../../constants/constants";
+import { CURRENTUSER } from "../../constants/constants";
 import SelectCategory from "../../components/SelectCategory";
 
 export default function withUpdatePost(Component) {
@@ -15,7 +15,6 @@ export default function withUpdatePost(Component) {
     const { _id, item, createOrUpdate, name, buttonName } = props;
     const [title, setTitle] = useState(item.title);
     const [body, setBody] = useState(item.body);
-    const user = JSON.parse(localStorage.getItem(USER));
     const [category, setCategory] = useState(item.category);
     const [message, setMessage] = useState("");
     const [disabledButton, setDisabledButton] = useState(false);
@@ -62,7 +61,7 @@ export default function withUpdatePost(Component) {
               onClick={async () => {
                 await createOrUpdate(
                   _id,
-                  user,
+                  JSON.parse(CURRENTUSER).email,
                   title,
                   body,
                   category,
