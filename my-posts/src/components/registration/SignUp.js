@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Button, DialogContentText } from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import Dialog from "@mui/material/Dialog";
@@ -16,12 +16,45 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const signup = async (e) => {
+    e.preventDefault();
+    await fetch("/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        isEmailVerify: false,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setError("");
+          navigate(`/${SIGNIN}`);
+        }
+        return res.json();
+      })
+      .then((res) => {
+        setError(res.message);
+      })
+      .catch(() => {
+        setError("Something went wrong.");
+      })
+      .then(() => {
+        setTimeout(() => {
+          setError(null);
+        }, 2000);
+      });
+  };
 
   return (
     <Dialog open={true} fullWidth sx={{ textAlign: "center" }}>
       <DialogTitle>Sign Up</DialogTitle>
-      {error && <DialogContentText color="error"> {error} </DialogContentText>}
-
       <DialogContent>
         <TextField
           placeholder="Email"
@@ -62,41 +95,7 @@ const SignUp = () => {
             password.length < 6 ||
             password !== confirmPassword
           }
-          onClick={async (e) => {
-            e.preventDefault();
-            await fetch("/signup", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email,
-                password,
-                isEmailVerify: false,
-              }),
-            })
-              .then((res) => {
-                if (res.status === 200) {
-                  setEmail("");
-                  setPassword("");
-                  setConfirmPassword("");
-                  setError("");
-                  navigate(`/${SIGNIN}`);
-                }
-                return res.json();
-              })
-              .then((res) => {
-                setError(res.message);
-              })
-              .catch(() => {
-                setError("Something went wrong.");
-              })
-              .then(() => {
-                setTimeout(() => {
-                  setError(null);
-                }, 2000);
-              });
-          }}
+          onClick={signup}
         >
           Sign Up
         </Button>

@@ -1,7 +1,8 @@
-import { CURRENTUSER, TOKEN } from "../../constants/constants";
 import { actionPost } from "./postReducer";
 
 const changeLike = (posts, item) => {
+  const currentUser = localStorage.getItem("currentUser");
+
   return {
     type: actionPost,
     payload: {
@@ -12,7 +13,7 @@ const changeLike = (posts, item) => {
             return {
               ...item,
               rate: item.rate,
-              likedUser: [JSON.parse(CURRENTUSER)?._id],
+              likedUser: [JSON.parse(currentUser)?._id],
             };
           } else {
             return currentPost;
@@ -24,17 +25,20 @@ const changeLike = (posts, item) => {
 };
 
 export const updateLike = (posts, item) => {
+  const currentUser = localStorage.getItem("currentUser");
+  const token = localStorage.getItem("token");
+
   return (dispatch) => {
     fetch("/like", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        token: TOKEN,
+        token,
       },
       body: JSON.stringify({
         _id: item._id,
         rate: ++item.rate,
-        likedUser: JSON.parse(CURRENTUSER)?._id,
+        likedUser: JSON.parse(currentUser)?._id,
       }),
     }).then(() => dispatch(changeLike(posts, item)));
   };

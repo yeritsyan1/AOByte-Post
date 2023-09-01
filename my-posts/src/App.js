@@ -7,12 +7,12 @@ import ProtectRoute from "./components/ProtectRoute";
 import ProtectLogin from "./components/registration/ProtectLogin";
 import {
   CREATEPOST,
+  CURRENTUSER,
   MYPOSTS,
   POST,
   SIGNIN,
   SIGNUP,
   TOKEN,
-  USER,
 } from "./constants/constants";
 import PageNotFound from "./components/PageNotFound";
 import { NewsFeedWithPostHOC } from "./components/NewsFeed";
@@ -73,7 +73,6 @@ const App = () => {
                 <CreatePostWithHOC
                   _id=""
                   item={{
-                    user: USER,
                     title: "",
                     body: "",
                     category: "General",
@@ -96,13 +95,8 @@ const App = () => {
                   path="/myPost"
                   action={actionMyPosts}
                   headers={{
-                    Authorization: `Bearer ${TOKEN?.substring(
-                      1,
-                      TOKEN.length - 1
-                    )}`,
-                    author: localStorage
-                      .getItem("user")
-                      ?.substring(1, localStorage.getItem("user").length - 1),
+                    Authorization: `Bearer ${JSON.parse(TOKEN)}`,
+                    author: JSON.parse(CURRENTUSER)?.email,
                     token: TOKEN,
                   }}
                   stateName="myPosts"

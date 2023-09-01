@@ -1,5 +1,3 @@
-import { CURRENTUSER, TOKEN, USER } from "../../constants/constants";
-
 const actionComments = "change-comments";
 export const initialCommentsReducer = [];
 
@@ -39,18 +37,21 @@ export const latestComments = () => {
 };
 
 export const addComment = (setComment, setOpen, comment, item) => {
+  const currentUser = localStorage.getItem("currentUser");
+  const token = localStorage.getItem("token");
+
   return (dispatch) => {
     setComment("");
-    localStorage.getItem(USER) || setOpen(true);
+    currentUser || setOpen(true);
     fetch("/sendComment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: TOKEN,
+        token,
       },
       body: JSON.stringify({
         author: {
-          email: JSON.parse(CURRENTUSER)?._id,
+          email: JSON.parse(currentUser)?._id,
         },
         body: comment,
         date: Date.now(),

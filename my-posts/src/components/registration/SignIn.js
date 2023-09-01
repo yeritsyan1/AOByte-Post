@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Button, DialogContentText } from "@mui/material";
-import { SIGNIN, SIGNUP, USER } from "../../constants/constants";
+import { Button } from "@mui/material";
+import { SIGNIN, SIGNUP } from "../../constants/constants";
 import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import SnackbarMessage from "../Snackbar";
 
 const SignIn = (props) => {
   const { open, setOpen } = props;
@@ -14,6 +15,34 @@ const SignIn = (props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const signin = (e) => {
+    e.preventDefault();
+    fetch(`/${SIGNIN}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setEmail("");
+          setPassword("");
+          setOpen(false);
+          setError("");
+        }
+        return res.json();
+      })
+      .then((res) => {
+        if (res?.token && res?.user) {
+          localStorage.setItem("token", JSON.stringify(res.token));
+          localStorage.setItem("currentUser", JSON.stringify(res?.user));
+          navigate("/");
+        }
+        setError(res.message);
+      })
+      .catch(() => alert("Try again"));
+  };
 
   return (
     <Dialog
@@ -27,7 +56,6 @@ const SignIn = (props) => {
       }}
     >
       <DialogTitle> Sign In </DialogTitle>
-      {error && <DialogContentText color="error"> {error} </DialogContentText>}
       <DialogContent>
         <TextField
           variant="outlined"
@@ -52,33 +80,7 @@ const SignIn = (props) => {
           <Button
             variant="contained"
             disabled={email.length < 6 || password.length < 6}
-            onClick={async (e) => {
-              e.preventDefault();
-              fetch(`/${SIGNIN}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-              })
-                .then((res) => {
-                  if (res.status === 200) {
-                    setEmail("");
-                    setPassword("");
-                    setOpen(false);
-                    setError("");
-                    localStorage.setItem(USER, JSON.stringify(email));
-                    navigate("/");
-                  }
-                  return res.json();
-                })
-                .then((res) => {
-                  localStorage.setItem("token", JSON.stringify(res.token));
-                  localStorage.setItem("currentUser", JSON.stringify(res.user));
-                  setError(res.message);
-                })
-                .catch(() => alert("Try again"));
-            }}
+            onClick={signin}
           >
             Sign In
           </Button>
@@ -87,6 +89,7 @@ const SignIn = (props) => {
       <DialogActions>
         <a href={`/${SIGNUP}`}> Sign Up </a>
       </DialogActions>
+      {!!error && <SnackbarMessage message={error} />}
     </Dialog>
   );
 };

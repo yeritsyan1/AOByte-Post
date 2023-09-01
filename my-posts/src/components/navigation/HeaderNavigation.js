@@ -1,18 +1,14 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { useLocation } from "react-router-dom";
-import {
-  CREATEPOST,
-  CURRENTUSER,
-  MYPOSTS,
-  SIGNIN,
-} from "../../constants/constants";
+import { CREATEPOST, MYPOSTS, SIGNIN } from "../../constants/constants";
 import { v4 as uuid } from "uuid";
 import { Button } from "@mui/material";
 
 export default function NavTabs() {
   const location = useLocation();
   const path = location.pathname;
+  const CURRENTUSER = localStorage.getItem("currentUser");
 
   return (
     <>
