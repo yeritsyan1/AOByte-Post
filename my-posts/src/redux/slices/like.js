@@ -33,7 +33,7 @@ export const updateLike = (posts, item) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        token,
+        token: JSON.parse(token),
       },
       body: JSON.stringify({
         _id: item._id,

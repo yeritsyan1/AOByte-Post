@@ -22,7 +22,7 @@ const Post = (props) => {
   const [showAll, setShowAll] = useState(false);
   const posts = useSelector(selectPost);
   const checkLiked = item.likedUser.find(
-    (item) => item === JSON.parse(currentUser)._id
+    (item) => item === JSON.parse(currentUser)?._id
   );
 
   const dispatch = useDispatch();

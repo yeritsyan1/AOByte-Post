@@ -6,7 +6,7 @@ export const deletePost = (_id, setMessage) => {
       method: "DELETE",
       headers: {
         _id,
-        token: TOKEN,
+        token: JSON.parse(TOKEN),
       },
     })
       .then((res) => {

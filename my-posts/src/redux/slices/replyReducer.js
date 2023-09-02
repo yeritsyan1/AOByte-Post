@@ -43,7 +43,7 @@ export const newReply = (message, setMessage, setOpen, comment) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token,
+        token: JSON.parse(token),
       },
       body: JSON.stringify({
         author: { email: JSON.parse(currentUser)._id },
@@ -71,7 +71,7 @@ export const newReReply = (setOpen, reReply, setReReply, rep) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token,
+        token: JSON.parse(token),
       },
       body: JSON.stringify({
         author: { email: JSON.parse(currentUser)._id },

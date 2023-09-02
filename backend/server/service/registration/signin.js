@@ -1,11 +1,11 @@
-import { generateAccessToken } from "../../../accessToken.js";
+import { generateAccessToken, refreshToken } from "../../../accessToken.js";
 import User from "../../../models/User.js";
 import bcryptjs from "bcryptjs";
 
 export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (!user) {
       return res
@@ -17,8 +17,11 @@ export const signin = async (req, res) => {
     if (!validPassword) {
       return res.status(400).json({ message: "Password is incorrect" });
     }
-    const token = generateAccessToken(user._id);
-    return res.status(200).json({ message: "", user, token });
+
+    const token = await generateAccessToken(user._id);
+    const tokenRefresh = await refreshToken(user.id);
+    user = await User.findOne({ email }).select("-password");
+    return res.status(200).json({ message: "", user, token, tokenRefresh });
   } catch (err) {
     res.status(400).json({ message: "Login error" });
   }

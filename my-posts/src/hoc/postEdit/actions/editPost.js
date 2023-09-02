@@ -20,7 +20,7 @@ export async function editPost(
       title,
       body,
       category,
-      token: TOKEN,
+      token: JSON.parse(TOKEN),
     },
   })
     .then((res) => {

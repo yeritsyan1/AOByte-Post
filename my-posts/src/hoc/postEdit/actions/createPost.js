@@ -16,7 +16,7 @@ export async function createPost(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      token: TOKEN,
+      token: JSON.parse(TOKEN),
     },
     body: JSON.stringify({
       author: user,

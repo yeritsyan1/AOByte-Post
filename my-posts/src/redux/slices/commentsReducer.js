@@ -47,7 +47,7 @@ export const addComment = (setComment, setOpen, comment, item) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token,
+        token: JSON.parse(token),
       },
       body: JSON.stringify({
         author: {

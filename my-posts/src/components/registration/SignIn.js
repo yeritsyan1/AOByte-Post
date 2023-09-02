@@ -36,6 +36,10 @@ const SignIn = (props) => {
       .then((res) => {
         if (res?.token && res?.user) {
           localStorage.setItem("token", JSON.stringify(res.token));
+          localStorage.setItem(
+            "tokenRefresh",
+            JSON.stringify(res.tokenRefresh)
+          );
           localStorage.setItem("currentUser", JSON.stringify(res?.user));
           navigate("/");
         }
