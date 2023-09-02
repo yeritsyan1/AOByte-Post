@@ -20,7 +20,7 @@ export const changeActive = (item, setIsClicked, setName) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        token: TOKEN,
+        token: JSON.parse(TOKEN),
       },
       body: JSON.stringify({
         _id: item._id,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SignUp from "./components/registration/SignUp";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./components/registration/SignIn";
@@ -27,6 +27,30 @@ import { createPost } from "./hoc/postEdit/actions/createPost";
 import { actionPost } from "./redux/slices/postReducer";
 
 const App = () => {
+  useEffect(() => {
+    if (TOKEN) {
+      fetch("/refresh-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: JSON.parse(TOKEN),
+          tokenrefresh: JSON.parse(localStorage.getItem("tokenRefresh")),
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          if (res?.newToken) {
+            localStorage.setItem("token", JSON.stringify(res.newToken));
+          }
+          if (res?.logOut) {
+            localStorage.clear();
+          }
+        });
+    }
+  }, []);
+
   return (
     <>
       <BrowserRouter>
@@ -97,7 +121,7 @@ const App = () => {
                   headers={{
                     Authorization: `Bearer ${JSON.parse(TOKEN)}`,
                     author: JSON.parse(CURRENTUSER)?.email,
-                    token: TOKEN,
+                    token: JSON.parse(TOKEN),
                   }}
                   stateName="myPosts"
                 />
