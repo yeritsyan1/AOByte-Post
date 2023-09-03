@@ -4,6 +4,8 @@ import { Button } from "@mui/material";
 import SnackbarMessage from "./Snackbar";
 import { useLocation } from "react-router";
 import { CURRENTUSER, TOKEN } from "../constants/constants";
+import { useDispatch } from "react-redux";
+import { sendLink, updateEmailVerify } from "../redux/slices/email";
 
 export default function MyPosts(props) {
   const { posts } = props;
@@ -11,52 +13,14 @@ export default function MyPosts(props) {
   const currentUser = JSON.parse(CURRENTUSER);
   const token = JSON.parse(TOKEN);
   const verifyPath = useLocation();
+  const dispatch = useDispatch();
 
   const verify = async () => {
-    await fetch("/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user: currentUser,
-        token,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setMessage(res.message);
-      })
-
-      .then(() => {
-        setTimeout(() => {
-          return setMessage(null);
-        }, 3000);
-      });
+    dispatch(sendLink(setMessage));
   };
 
   const updateVerify = () => {
-    fetch("/updateVerify", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user: currentUser,
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setMessage(res.message);
-      })
-
-      .then(() => {
-        setTimeout(() => {
-          return setMessage(null);
-        }, 3000);
-      });
+    currentUser.isEmailVerify || dispatch(updateEmailVerify(setMessage));
   };
 
   useEffect(() => {
