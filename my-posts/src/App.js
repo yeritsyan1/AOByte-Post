@@ -25,29 +25,15 @@ import EmptyComponent from "./hoc/props/EmptyComponent";
 import FilteredPage from "./components/FilteredPage";
 import { createPost } from "./hoc/postEdit/actions/createPost";
 import { actionPost } from "./redux/slices/postReducer";
+import { useDispatch } from "react-redux";
+import { updateToken } from "./redux/slices/refreshTokenReducer";
 
 const App = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (TOKEN) {
-      fetch("/refresh-token", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          token: JSON.parse(TOKEN),
-          tokenrefresh: JSON.parse(localStorage.getItem("tokenRefresh")),
-        },
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          if (res?.newToken) {
-            localStorage.setItem("token", JSON.stringify(res.newToken));
-          }
-          if (res?.logOut) {
-            localStorage.clear();
-          }
-        });
+      dispatch(updateToken());
     }
   }, []);
 

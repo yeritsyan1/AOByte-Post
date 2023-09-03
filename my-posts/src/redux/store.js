@@ -12,6 +12,11 @@ import {
 import { initialMyPostsReducer, myPostReducer } from "./slices/myPostReducer";
 import { filterReducer, initialFilterReducer } from "./slices/searchReducer";
 import { initialReply, initialReplyReducer } from "./slices/replyReducer";
+import { emailReducer, initialEmailReducer } from "./slices/email";
+import {
+  initialRefreshTokenReducer,
+  refreshTokenReducer,
+} from "./slices/refreshTokenReducer";
 
 export const store = createStore(
   combineReducers({
@@ -20,6 +25,8 @@ export const store = createStore(
     myPosts: myPostReducer,
     filteredPosts: filterReducer,
     reply: initialReplyReducer,
+    emailVerify: emailReducer,
+    refreshToken: refreshTokenReducer,
   }),
   {
     posts: initialPostreducer,
@@ -27,6 +34,8 @@ export const store = createStore(
     myPosts: initialMyPostsReducer,
     filteredPosts: initialFilterReducer,
     reply: initialReply,
+    emailVerify: initialEmailReducer,
+    refreshToken: initialRefreshTokenReducer,
   },
   applyMiddleware(thunk)
 );
