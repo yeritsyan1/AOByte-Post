@@ -9,6 +9,7 @@ import HouseIcon from "@mui/icons-material/House";
 import SnackbarMessage from "../../components/Snackbar";
 import { CURRENTUSER } from "../../constants/constants";
 import SelectCategory from "../../components/SelectCategory";
+import Image from "../../components/Image";
 
 export default function withUpdatePost(Component) {
   return function (props) {
@@ -19,6 +20,7 @@ export default function withUpdatePost(Component) {
     const [message, setMessage] = useState("");
     const [disabledButton, setDisabledButton] = useState(false);
     const navigate = useNavigate();
+    const [imgList, setImgList] = useState([]);
 
     return (
       <div>
@@ -30,29 +32,34 @@ export default function withUpdatePost(Component) {
           </DialogActions>
           <DialogTitle> {name} </DialogTitle>
           <DialogContent>
-            <TextField
-              placeholder="Title"
-              value={title}
-              onChange={(e) => {
-                return setTitle(e.target.value);
-              }}
-            />
-          </DialogContent>
-          <DialogContent>
-            <TextField
-              fullWidth
-              style={{ overflow: "scroll" }}
-              placeholder="Type something..."
-              multiline
-              rows="3"
-              value={body}
-              onChange={(e) => {
-                setBody(e.target.value);
-              }}
-            />
-          </DialogContent>
-          <DialogContent>
-            <SelectCategory category={category} setCategory={setCategory} />
+            <DialogContent>
+              <TextField
+                placeholder="Title"
+                value={title}
+                onChange={(e) => {
+                  return setTitle(e.target.value);
+                }}
+              />
+            </DialogContent>
+            <DialogContent>
+              <TextField
+                fullWidth
+                style={{ overflow: "scroll" }}
+                placeholder="Type something..."
+                multiline
+                rows="3"
+                value={body}
+                onChange={(e) => {
+                  setBody(e.target.value);
+                }}
+              />
+            </DialogContent>
+            <DialogContent>
+              <SelectCategory category={category} setCategory={setCategory} />
+            </DialogContent>
+            <DialogContent>
+              <Image imgList={imgList} setImgList={setImgList} />
+            </DialogContent>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => navigate(-1)}>Cancel</Button>
@@ -69,13 +76,18 @@ export default function withUpdatePost(Component) {
                   setTitle,
                   setBody,
                   setCategory,
-                  setMessage
+                  setMessage,
+                  imgList
                 );
                 await setTitle("");
                 await setBody("");
                 await setCategory("General");
+                await setImgList([]);
               }}
-              disabled={title.length < 2 || body.length < 10 || disabledButton}
+              disabled={
+                ((body.length < 2 || disabledButton) && !imgList.length) ||
+                title.length < 2
+              }
             >
               {buttonName}
             </Button>

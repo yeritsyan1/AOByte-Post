@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { selectPost } from "../redux/slices/postReducer";
 import { updateLike } from "../redux/slices/like";
 import { addComment } from "../redux/slices/commentsReducer";
+import PostImgList from "./posts/ImageList";
 
 const Post = (props) => {
   const { setOpen, item, AdditionalActions } = props;
@@ -79,6 +80,7 @@ const Post = (props) => {
               item.body
             )}
           </Typography>
+          <PostImgList item={item} />
         </CardContent>
         <CardActions>
           <Button

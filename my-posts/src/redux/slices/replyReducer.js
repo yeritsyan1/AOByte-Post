@@ -46,7 +46,7 @@ export const newReply = (message, setMessage, setOpen, comment) => {
         token: JSON.parse(token),
       },
       body: JSON.stringify({
-        author: { email: JSON.parse(currentUser)._id },
+        author: { email: JSON.parse(currentUser)?._id },
         body: message,
         date: Date.now(),
         rate: 0,
