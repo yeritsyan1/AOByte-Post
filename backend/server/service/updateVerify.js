@@ -18,7 +18,7 @@ export const updateVerify = (req, res) => {
     if (updateResult.nModified === 1) {
       res.status(200).json({ message: "Email verified" });
     } else {
-      res.status(400).json({ message: "Verified" });
+      res.json({ message: "Verified" });
     }
   } catch (err) {
     res.status(400).json({ message: "Something went wrong" });

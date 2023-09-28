@@ -10,7 +10,8 @@ export async function createPost(
   setTitle,
   setBody,
   setCategory,
-  setMessage
+  setMessage,
+  imgList
 ) {
   return await fetch("/post", {
     method: "POST",
@@ -27,6 +28,7 @@ export async function createPost(
       rate: 0,
       date: Date.now(),
       isActive: true,
+      imgList,
     }),
   })
     .then((res) => {
